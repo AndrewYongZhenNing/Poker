@@ -152,9 +152,9 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
   Deck game_deck = Deck(); //initialises a Deck (object) of cards for gameplay
   game_deck.shuffle();
 
-  std::cout << "[TEST] This is the game deck" << std::endl; // test purposes
-
-  game_deck.show(); // test purposes
+  // std::cout << "[TEST] This is the game deck" << std::endl; // test purposes
+  //
+  // game_deck.show(); // test purposes
 
   std::cout << "Please enter the number of players:";
   std::cin >> _number_of_players;
@@ -169,8 +169,30 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   deal_pocket(game_deck); // starts dealing each player their pocket cards
 
-  std::cout << "[TEST] After dealing two card per player" << std::endl;
-  game_deck.show();
+  //BETTING HAPPENS HERE, BUT FIRST ASSUME NO BETTING AND GO STRAIGHT TO FLOP
+
+  deal_flop(game_deck);
+
+  std::cout << "Community cards at flop: " << std::endl;
+
+  show_board();
+
+  deal_turn(game_deck);
+
+  std::cout << "\nCommunity cards at turn: " << std::endl;
+
+  show_board();
+
+  deal_river(game_deck);
+
+  std::cout << "\nCommunity cards at river: " << std::endl;
+
+  show_board();
+
+  std::cout <<"" << std::endl;
+
+  // all the community cards are now on the table, now determine rank
+
 
 }
 
@@ -191,20 +213,54 @@ void Game::deal_pocket(Deck &deck){ // deal pocket cards to each player
 
   for (_players_iter = _players.begin(); _players_iter != _players.end(); _players_iter++){
     int i = 0;
-    Player temp = *_players_iter; // dereferences the pointer, now temp holds the Player object iter is pointing at in the vector
+    Player temp_player = *_players_iter; // dereferences the pointer, now temp holds the Player object iter is pointing at in the vector
 
     for (int i = 0; i < 2; i++){ // deals two cards
 
       Card temp_card = deck.get_top(); // gets the top card from game_deck Deck
-      temp.deal(temp_card); // pushes top card of game deck into temp's (which is a player's) method
+      temp_player.deal(temp_card); // pushes top card of game deck into temp's (which is a player's) method
       deck.new_top(); // ensures that the top card is removed
 
     }
 
+  }
 
-    // something like pocket_cards.push_back(game_deck.get_top())
+}
 
+void Game::deal_flop(Deck &deck){ // deals first 3 community cards
 
+  for (int i = 0; i < 3; i++){
+
+    Card community_card = deck.get_top();
+    _board.push_back(community_card); // adds 3 cards onto board vector
+    deck.new_top();
+
+  }
+
+}
+
+void Game::deal_turn(Deck &deck){ // deals the 4th community card
+
+  Card community_card = deck.get_top();
+  _board.push_back(community_card); // adds one card onto board vector during turn
+  deck.new_top();
+
+}
+
+void Game::deal_river(Deck &deck){ // deals the 5th community card
+
+  Card community_card = deck.get_top();
+  _board.push_back(community_card); // adds one final Card object onto board vector during river
+  deck.new_top();
+
+}
+
+void Game::show_board(){ // display the board - essential for the game
+
+  for (_board_iter = _board.begin(); _board_iter!=_board.end(); _board_iter++){ // for printing out community card
+    Card temp = *_board_iter;
+
+    std::cout << temp.getSuit() << temp.getValue()  << " " << std::flush;
   }
 
 }
