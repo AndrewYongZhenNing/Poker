@@ -1,4 +1,4 @@
-#include "hilo.h"
+#include "poker.h"
 
 Card::Card(char Suit, int value){
 
@@ -62,7 +62,7 @@ void Deck::shuffle(){ // randomly shuffles the deck using srand in main
   std::random_shuffle(_deck.begin(),_deck.end());
 }
 
-void Deck::show(){ //tested it on main, shows entire deck successfully
+void Deck::show(){ // display the entire deck on the terminal
 
   for (_deck_iter = _deck.begin(); _deck_iter != _deck.end(); _deck_iter++){
     Card temp = *_deck_iter;
@@ -78,5 +78,15 @@ void Deck::new_top(){ // takes the current top card and pushes it back to the bo
 
   _deck.push_back(*_deck_iter); //pushes a value equivalent the Card object iter is pointing at (the top card) to the bottom of the deck
   _deck.erase(_deck_iter); // now erase top Card object to avoid duplication
-  
+
 }
+
+Player::Player(){ //upon initialising, give player a name and container to hold two cards (hole/pocket cards)
+
+  std::cout << "\nEnter your name below:";
+  std::cin >> player_name;
+  std::cout << player_name << " has joined the game." << std::endl;
+
+}
+
+Player::~Player(){};
