@@ -1,5 +1,5 @@
-#ifndef _KLASS_
-#define _KLASS_
+#ifndef _POKER_KLASS_
+#define _POKER_KLASS_
 
 #include <iostream>
 #include <vector>
@@ -45,10 +45,18 @@ protected:
 
 };
 
-//
-// class Game{ //initialises the high-low game
-//
-// };
+class Player{ // creates new Player (objects)
+
+public:
+  Player();
+  ~Player();
+
+protected:
+  std::string player_name;
+  std::vector<Card> _pocket_cards; // container with two spaces to hold the cards
+  std::vector<Card>::iterator _pocket_iter;
+
+};
 
 
 #endif
