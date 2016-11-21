@@ -1,4 +1,4 @@
-#include "hilo.h"
+#include "poker.h"
 #include <iostream>
 #include <ctime>
 
@@ -21,6 +21,8 @@ int main(){
 
   mydeck.new_top();
   mydeck.show();
+
+  Player p1 = Player();
 
 
 
