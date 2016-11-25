@@ -13,91 +13,6 @@
 #include "player.h"
 #include "hand.h"
 
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // CARD CLASS
-//
-// class Card{
-//
-// public:
-//
-//   Card(char Suit, int value); // initialises the constructor
-//   // Card();
-//   ~Card();
-//
-//   char getSuit(); // get the suit of the Card object
-//   int getValue(); // get the value of the Card object
-//
-//
-// protected:
-//
-//   char _suit;
-//   int _value;
-//
-//
-// };
-//
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // DECK CLASS
-//
-// class Deck{
-//
-// public:
-//
-//   Deck();
-//   ~Deck();
-//
-//   void shuffle(); // randomises the sequence of cards
-//   void show(); // test purposes: show the entire deck
-//   void new_top(); // replaces the top card (can also be used analogously as pop_front()!)
-//   Card get_top(); // returns an object of type Card
-//
-// protected:
-//
-//   char _suit[4] = {'H', 'C', 'S', 'D'}; // defines the symbols for each suit using char
-//   std::vector<Card> _deck; // takes in objects constructed by Card
-//   std::vector<Card>::iterator _deck_iter; // a pointer for going through the Deck
-//
-// };
-//
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // PLAYER CLASS
-//
-// class Player{ // creates new Player (objects)
-//
-// public:
-//   Player();
-//   ~Player();
-//   void show_name();
-//   // void show_pocket(); // reveals the pocket card of the Player
-//   void deal(Card &top_card); //dereferences the Deck iter into the _pocket_cards container
-//   std::vector<Card> get_pocket(); // gets a vector container full of Card objects
-//
-// protected:
-//   std::string player_name;
-//   std::vector<Card> _pocket_cards; // container with two spaces to hold the cards
-//   std::vector<Card>::iterator _pocket_iter; // maybe redundant
-//
-// };
-//
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // HAND CLASS
-//
-// class Hand{ // evaluates the hands for each player at showdown
-//
-// public:
-//
-//   Hand(Player &player, std::vector<Card> board); // constructor takes a Player object and a vector (from Game)
-//   ~Hand();
-//
-// protected:
-//
-//   std::vector<Card> _hand;
-//   std::vector<Card> _temp_player; // create a temporary Player object to take player's pocket cards
-//   std::vector<Card>::iterator _temp_iter;
-//
-// };
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAME CLASS
 
@@ -107,6 +22,7 @@ public:
 
   Game();
   ~Game();
+  void start(); // starts the game after initialising
   void show_players(); // made for testing purporses
   void deal_pocket(Deck &deck); // deal pocket cards to each player
   void deal_flop(Deck &deck); // deals first 3 community cards
@@ -114,7 +30,7 @@ public:
   void deal_river(Deck &deck); // deals 5th community card
   //N.B essentially deal_turn and deal_river have some methods, but I made different functions as to avoid any unforseen subtle errors, can change later
   void show_board();
-  std::vector<Card> get_board();
+  // std::vector<Card> get_board();
 
 protected:
   int _number_of_players;
@@ -122,6 +38,7 @@ protected:
   std::vector<Player>::iterator _players_iter;
   std::vector<Card> _board; // this is where the community Card objects are placed
   std::vector<Card>::iterator _board_iter; // for checking if _board has at least 3 cards after flop
+
 
 };
 

@@ -17,6 +17,9 @@ public:
 
   char getSuit(); // get the suit of the Card object
   int getValue(); // get the value of the Card object
+  void show_card(); // displays the Card object on the terminal (with A K Q J in place of 1,13,12,11)
+  // N.B void is for display purposes; for sorting and rearrangements must use getSuit() and getValue()
+  bool operator<(const Card &rhs); // used to sort Card objects by values later
 
 
 protected:

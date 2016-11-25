@@ -14,8 +14,9 @@ Player::Player(){ //upon initialising, give player a name and container to hold 
 
 Player::~Player(){};
 
-void Player::show_name(){
-  std::cout << player_name << std::endl;
+std::string Player::show_name(){
+  // std::cout << player_name << std::endl;
+  return player_name;
 }
 
 // void Player::show_pocket(){ // reveals the pocket card of the Player
@@ -46,6 +47,18 @@ void Player::deal(Card &top_card){ // takes in a Deck object, then use get_top()
 }
 
 std::vector<Card> Player::get_pocket(){ // returns the vector container with pocket cards in it
-  std::cout << "In get_pocket(), size of _pocket_cards is:" << _pocket_cards.size() << std::endl;
+
   return _pocket_cards; // << this is a vector
+}
+
+void Player::assign_score(int hand_score){
+
+  _score = hand_score;
+
+}
+
+int Player::get_score(){
+
+  std::cout << player_name << "'s score is: " << _score << "\n" << std::endl;
+  return _score;
 }
