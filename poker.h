@@ -22,6 +22,7 @@ public:
 
   Game();
   ~Game();
+  // void debug(); // a debugger program I make to check whether the scores are rightuflly allocated
   void start(); // starts the game after initialising
   void show_players(); // made for testing purporses
   void deal_pocket(Deck &deck); // deal pocket cards to each player
@@ -31,6 +32,8 @@ public:
   //N.B essentially deal_turn and deal_river have some methods, but I made different functions as to avoid any unforseen subtle errors, can change later
   void show_board();
   // std::vector<Card> get_board();
+  int declare_winner(); // determines the winner from the scores given to the Player objects
+  void next_round(); // clears the pocket and community cards, starts a new game
 
 protected:
   int _number_of_players;

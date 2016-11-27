@@ -45,6 +45,7 @@ Hand::Hand(Player &player, std::vector<Card> board){ // evaluates the hands of e
 
   //sorts and give the Hand object a score
   player.assign_score(evaluate(_hand)); // assigns the score to the Player object this Hand is for
+  player.show_score(); //a method to check if the scores are evaluated properly
   player.get_score();
 
 }
@@ -130,37 +131,40 @@ int Hand::evaluate(std::vector<Card> hand){ // sorts and prints out the sorted H
   std::cout << "" << std::endl;
 
   //assigning score to each possible Hand
-
-  if(pair == 0){ // high card
-    score = 1;
-  }
-
-  else if(pair == 1){ // 1-Pair
-    score = 2;
-  }
-
-  else if(pair == 2){ // 2-Pairs
-    score = 3;
-  }
-
-  else if(three_kind){
-    score = 4;
-  }
-
-  else if(straight){
-    score = 5;
-  }
-
-  else if(flush){
-    score = 6;
+  if(straight_flush){
+    score = 9;
   }
 
   else if(four_kind){
     score = 8;
   }
 
-  else if(straight_flush){
-    score = 9;
+  else if(pair == 1 && three_kind){
+    score = 7;
+  }
+
+  else if(flush){
+    score = 6;
+  }
+
+  else if(straight){
+    score = 5;
+  }
+
+  else if(three_kind){
+    score = 4;
+  }
+
+  else if(pair >= 2){ // 2-Pairs // THIS IS TEMPORARY SOLUTION; in Texas Hold'em there is no more than 2 pairs since maximum hand size is 5, will do value comparison later on
+    score = 3;
+  }
+
+  else if(pair == 1){ // 1-Pair
+    score = 2;
+  }
+
+  else if(pair == 0){ // high card
+    score = 1;
   }
 
   return score;
@@ -171,25 +175,33 @@ void Hand::flush_check(std::vector<Card> hand){
   char suit_set[4] = {'H', 'C', 'S', 'D'};
   int suit_counter=0; // create a counter to use for each suit
 
-  for(int i = 0; i < 4; i++){
+  for(int i = 0; i < 4; i++){ // for every suit
 
     for (_temp_iter = hand.begin(); _temp_iter != hand.end(); _temp_iter++){
       Card temp = *_temp_iter;
       if(temp.getSuit() == suit_set[i]){
+        // std::cout << "In flush_check, temp_suit:"<< temp.getSuit() << " suit_set: " << suit_set[i] << std::endl; // for testing purposes
         suit_counter += 1;
       }
 
     }
 
-    if(suit_counter == 5){
-      flush = true;
+    if(suit_counter == 5){ // if found a flush, exit immediately
+      flush= true;
+      // return 0;
+    }
+
+    else{ // sets suit_counter back to zero if there are less than 5 Card objects of the current suit
+      suit_counter = 0;
     }
 
   }
 
   if(suit_counter != 5){ // not a flush
     flush = false;
+    // return 0;
   }
+
 }
 
 void Hand::straight_flush_check(std::vector<Card> hand){

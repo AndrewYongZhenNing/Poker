@@ -24,7 +24,9 @@ public:
   void deal(Card &top_card); //dereferences the Deck iter into the _pocket_cards container
   std::vector<Card> get_pocket(); // gets a vector container full of Card objects
   void assign_score(int hand_score);
-  int get_score();
+  int get_score(); // returns the score from the Player object's hand
+  void show_score(); //test method to check the scores during development
+  void empty_pocket(); // empties the pocket container of pocket Card objects
 
 protected:
   std::string player_name;

@@ -18,44 +18,27 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   }
 
+
   std::cout << "\nBegin game.\n" << std::endl;
 
   start(); //starts the actual dynamic of the game
-
-  // deal_pocket(game_deck); // starts dealing each player their pocket cards
-  //
-  // //BETTING HAPPENS HERE, BUT FIRST ASSUME NO BETTING AND GO STRAIGHT TO FLOP
-  //
-  // deal_flop(game_deck);
-  //
-  // std::cout << "Community cards at flop: " << std::endl;
-  //
-  // show_board();
-  //
-  // deal_turn(game_deck);
-  //
-  // std::cout << "\nCommunity cards at turn: " << std::endl;
-  //
-  // show_board();
-  //
-  // deal_river(game_deck);
-  //
-  // std::cout << "\nCommunity cards at river: " << std::endl;
-  //
-  // show_board();
-  //
-  // std::cout << "" << std::endl;
-  //
-  // // all the community cards are now on the table, now determine rank
-  //
-  // for (int i = 0; i < _number_of_players; i++){
-  //   Hand(_players[i],_board);
-  // }
 
 
 }
 
 Game::~Game(){};
+
+// void Game::debug(){
+//
+//   int rank = 0;
+//
+//   std::cout << "Select rank to evaluate: ";
+//   std::cin >> rank;
+//
+//   while(start() != rank){
+//     start();
+//   }
+// }
 
 void Game::start(){
 
@@ -97,9 +80,24 @@ void Game::start(){
 
   for (int i = 0; i < _number_of_players; i++){
     Hand(_players[i],_board); // takes in Player object's pocket cards and the community cards to go through evaluation
-    
+
   }
 
+  declare_winner(); // declares the winner and ends the game
+
+  // declare_winner(); // declares the winner and ends the game
+
+  //SIMULATION LOOP
+  // char response;
+  //
+  // std::cout << "Run simulation again? y/n\n";
+  // std::cin >> response;
+  //
+  // if(response == 'y'){ // start simulation again
+  //   start();
+  // }
+
+  // next_round(); //do not uncomment until you know whether containers themselves need to be fully deleted and if so, how?
 
 }
 
@@ -174,3 +172,54 @@ void Game::show_board(){ // display the board - essential for the game
 //   return _board;
 //
 // }
+
+int Game::declare_winner(){
+
+  int j = 0;
+  bool draw = false;
+  Player winner = _players[j]; // assume the first Player object in the _player container is the winner
+
+  for (int i =j+1; i < _players.size(); i++){
+    if(winner.get_score() <= _players[i].get_score()){
+      if (winner.get_score() == _players[i].get_score()){ // potentially a draw
+        draw = true;
+
+      }
+
+      else{ // the candidate winner has the lower score, transfer the information of the candidate winner to the winner object
+        winner = _players[i]; // let the winner be the i'th Player object which has the presently highest score
+        draw = false; // put this line here just in case previous there were cases where other Plyers objects have the same score
+      }
+
+    }
+
+  }
+
+  if (!draw){
+    std::cout << "Congratulations!\nThe winner is: " << winner.show_name() << std::endl;
+    return winner.get_score();
+  }
+
+  else if (draw){
+    std::cout << "It's a draw between:" << std::endl;
+
+    for(int p = 0; p < _players.size(); p++){
+      if(_players[p].get_score() == winner.get_score()){ // prints those who share the same score
+        std::cout << _players[p].show_name() << std::endl;
+      }
+    }
+  }
+
+  return 0;
+}
+
+void Game::next_round(){
+  _board.clear(); // destroys all community Card objects
+
+  for (int i = 0; i < _players.size(); i++){ // removes all pocket cards
+    _players[i].empty_pocket();
+  }
+
+  start();
+
+}

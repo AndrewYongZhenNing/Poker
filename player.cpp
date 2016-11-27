@@ -59,6 +59,17 @@ void Player::assign_score(int hand_score){
 
 int Player::get_score(){
 
-  std::cout << player_name << "'s score is: " << _score << "\n" << std::endl;
   return _score;
+}
+
+void Player::show_score(){
+
+  std::cout << player_name << "'s score is: " << _score << "\n" << std::endl;
+
+}
+
+void Player::empty_pocket(){ // empties the pocket container of pocket Card objects
+
+  _pocket_cards.clear();
+  
 }
