@@ -7,8 +7,21 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   std::cout << "Welcome to a game of Poker." << std::endl;
 
+
   std::cout << "Please enter the number of players:";
   std::cin >> _number_of_players;
+
+  // HOW DO I GET IT TO EXIT LOOP?
+  // try{
+  //   if (_number_of_players < 3){
+  //     throw 1;
+  //   }
+  // }
+  //
+  // catch(int exception){
+  //   std::cerr << "Insufficient players. Please ensure at least 3 players participate in the game." << std::endl;
+  //
+  // }
 
   for(int i = 1; i <= _number_of_players; i++){ // create new players
 
@@ -18,6 +31,7 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   }
 
+  std::random_shuffle(_players.begin(),_players.end());// shuffles the order of the Player objects such that game does not always start with Player 1 as the dealer
 
   std::cout << "\nBegin game.\n" << std::endl;
 
@@ -46,15 +60,39 @@ void Game::start(){
   std::cout << "Shuffling deck...\n" << std::endl;
   game_deck.shuffle();
 
-  // std::cout << "[TEST] This is the game deck" << std::endl; // test purposes
-  //
-  // game_deck.show(); // test purposes
-
-  std::cout << "Dealing pocket cards to players...\n" << std::endl;
+  std::cout << "Dealer: " << _players.back().show_name() << " \nSmall Blind: " << _players[0].show_name() << " \nBig Blind: " << _players[1].show_name() << std::endl;
+  std::cout << "\nDealing pocket cards to players...\n" << std::endl;
 
   deal_pocket(game_deck); // starts dealing each player their pocket cards
 
-  //BETTING HAPPENS HERE, BUT FIRST ASSUME NO BETTING AND GO STRAIGHT TO FLOP
+  //BETTING HAPPENS HERE
+  std::cout << "\nBetting begins: " << std::endl;
+  _players[1].bet(_small_blind);
+  _players[2].bet(_big_blind);
+
+  for (int i =2; i < _players.size(); i++){
+    char response;
+    std::cout << _players[i].show_name() << ": Would you like to call/check(c), raise(r), or fold(f)?\nEnter your command (c,r or f)";
+    std::cin >> response;
+
+    if(response == 'c'){// call: match with the current raised value
+      //do something
+    }
+
+    else if(response == 'r'){
+      //do something else
+    }
+
+    else if(response == 'f'){
+      //do something else
+    }
+
+    else{
+      std::cerr << "Invalid response. Please try again." << std::endl;
+    }
+  }
+
+  // std::cout << "Total pot: " << _pot << std::endl;
 
   deal_flop(game_deck);
 
@@ -85,19 +123,7 @@ void Game::start(){
 
   declare_winner(); // declares the winner and ends the game
 
-  // declare_winner(); // declares the winner and ends the game
-
-  //SIMULATION LOOP
-  // char response;
-  //
-  // std::cout << "Run simulation again? y/n\n";
-  // std::cin >> response;
-  //
-  // if(response == 'y'){ // start simulation again
-  //   start();
-  // }
-
-  // next_round(); //do not uncomment until you know whether containers themselves need to be fully deleted and if so, how?
+  // next_round(); //container gets destructed when it goes out of scope
 
 }
 
@@ -173,7 +199,7 @@ void Game::show_board(){ // display the board - essential for the game
 //
 // }
 
-int Game::declare_winner(){
+void Game::declare_winner(){
 
   int j = 0;
   bool draw = false;
@@ -197,7 +223,8 @@ int Game::declare_winner(){
 
   if (!draw){
     std::cout << "Congratulations!\nThe winner is: " << winner.show_name() << std::endl;
-    return winner.get_score();
+    //winner.collect_pot(_pot); // increases the winner's bankroll by the amount of bet on the particular round
+
   }
 
   else if (draw){
@@ -210,13 +237,12 @@ int Game::declare_winner(){
     }
   }
 
-  return 0;
 }
 
 void Game::next_round(){
   _board.clear(); // destroys all community Card objects
 
-  for (int i = 0; i < _players.size(); i++){ // removes all pocket cards
+  for (int i = 0; i < _players.size(); i++){ // removes all pocket Card objects from all Player objects
     _players[i].empty_pocket();
   }
 

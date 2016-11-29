@@ -32,11 +32,14 @@ public:
   //N.B essentially deal_turn and deal_river have some methods, but I made different functions as to avoid any unforseen subtle errors, can change later
   void show_board();
   // std::vector<Card> get_board();
-  int declare_winner(); // determines the winner from the scores given to the Player objects
+  void declare_winner(); // determines the winner from the scores given to the Player objects
   void next_round(); // clears the pocket and community cards, starts a new game
 
 protected:
   int _number_of_players;
+  int _community_pot = 0; // this is the money that will be on the table frmo Player objects that have folded
+  int _big_blind = 100;
+  int _small_blind = 0.5*_big_blind;
   std::vector<Player> _players; // a vector container to contain all Player object profiles
   std::vector<Player>::iterator _players_iter;
   std::vector<Card> _board; // this is where the community Card objects are placed
