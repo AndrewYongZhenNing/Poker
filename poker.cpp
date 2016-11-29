@@ -33,6 +33,12 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   std::random_shuffle(_players.begin(),_players.end());// shuffles the order of the Player objects such that game does not always start with Player 1 as the dealer
 
+  // Add Player objects on to a container of active Player objects now
+  for (int i = 0;i < _players.size(); i++){
+    _active_players.push_back(_players[i]);
+  }
+
+
   std::cout << "\nBegin game.\n" << std::endl;
 
   start(); //starts the actual dynamic of the game
@@ -67,8 +73,13 @@ void Game::start(){
 
   //BETTING HAPPENS HERE
   std::cout << "\nBetting begins: " << std::endl;
+
+  int call_amount = 0; // a reference amount of raise in each round
+
   _players[1].bet(_small_blind);
   _players[2].bet(_big_blind);
+
+  call_amount += _big_blind;
 
   for (int i =2; i < _players.size(); i++){
     char response;
@@ -76,11 +87,16 @@ void Game::start(){
     std::cin >> response;
 
     if(response == 'c'){// call: match with the current raised value
-      //do something
+      _players[i].call(call_amount);
+      _players[i].show_bankroll();
     }
 
     else if(response == 'r'){
       //do something else
+      _players[i].call(call_amount); // first even with the current highest
+      _players[i].bet(_big_blind); // then add one unit of big blind
+      _players[i].show_bankroll();
+      call_amount+= _big_blind; // raise by one unit of big blind
     }
 
     else if(response == 'f'){
