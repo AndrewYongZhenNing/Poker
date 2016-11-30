@@ -89,21 +89,28 @@ int Hand::evaluate(std::vector<Card> hand){ // sorts and prints out the sorted H
 
         }
 
-        else{ // it's a Three of a Kind
+        else if (i+3 < hand.size() && hand[i].getValue() != hand[i+3].getValue()){ // it's a Three of a Kind
           three_kind = true;
         }
 
       }
 
-      else{ // it's a 1-Pair
+      else if(i>0 && hand[i-1].getValue() != hand[i].getValue()){ // extra condition to ensure that this is only a 1-Pair IFF it is not equal to the value before it
 
         //push back for later:
         // pushes back the two cards that makes 1-Pair
         // _pair.push_back(hand[i]);
         // _pair.push_back(hand[i+1]);
-
         pair +=1;
+        // if (pair >2){ // if there are more
+        //   three_kind = true;
+        //   pair = 0
+        // }
 
+      }
+
+      else if(i ==0){ // it is definitely a 1-Pair
+        pair +=1;
       }
     }
     // Check for Straight, Full House
@@ -139,7 +146,7 @@ int Hand::evaluate(std::vector<Card> hand){ // sorts and prints out the sorted H
     score = 8;
   }
 
-  else if(pair == 1 && three_kind){
+  else if(pair == 1 && three_kind){ //full house
     score = 7;
   }
 

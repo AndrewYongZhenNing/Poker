@@ -82,7 +82,7 @@ void Player::bet(int amount){
 
 void Player::call(int remain){
   if (_bankroll > 0){
-    int amount = remain - _pot;
+    int amount = remain - _pot; //variable amount would be the quantity required to bet in order to level with the current amount
     bet(amount);
   }
 
@@ -98,12 +98,21 @@ void Player::raise_(int amount){
 //   call()
 // }
 
-int Player::get_pot(){
-  return _pot;
-}
 
 void Player::show_bankroll(){
   std::cout << "Bankroll: " << _bankroll << std::endl;
+}
+
+int Player::get_pot(){
+  return _pot;
+}
+void Player::clear_pot(){
+  _pot = 0;
+}
+
+
+void Player::claim_pot(int community_pot){
+  _bankroll += community_pot;
 }
 
 // void Player::collect_pot(int pot_money){

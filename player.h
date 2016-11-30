@@ -30,8 +30,10 @@ public:
   void bet(int amount); // returns the amount the Player object's puts into the pot, in the meantime deducting that amount from Player object's bankroll
   void call(int remain); // bets the amount such that the Player object's pot is level with the highest amount of the round
   void raise_(int amount); // raises the call amount by one unit (1 _big_blind at pre-flop and flop, 2 _big_blind at turn and river)
-  int get_pot();
   void show_bankroll();// displays bankroll during game
+  int get_pot();
+  void clear_pot();
+  void claim_pot(int community_pot); // winner Player object claims the community pot and appends the amount into bankroll
   // void collect_pot(int pot_money); // collects the pot [FOR WINNERS ONLY]
 
 protected:

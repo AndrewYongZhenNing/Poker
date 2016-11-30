@@ -153,6 +153,7 @@ void Game::show_players(){ // test purposes: show how many players are in the ga
 
 void Game::bet(int &amount, int raise_unit){
 
+  _call_counter = 0;
   char response = 'n';
 
   for (int i = 0; i < _active_players.size(); i++){
@@ -184,6 +185,7 @@ void Game::bet(int &amount, int raise_unit){
       // char fold_response;
       // std::cout << "You selected fold(f), are you sure?"
       std::cout << "Player " << _active_players[i].show_name() << " has folded." << std::endl;
+      _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
       _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects; will rejoin in the subsequent games
       i --; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
 
@@ -300,6 +302,14 @@ void Game::declare_winner(){
   bool draw = false;
   Player winner = _active_players[j]; // assume the first Player object in the _player container is the winner
 
+  for(j; j<_active_players.size(); j++){ // puts all Player objects' pot into a community pot to be claimed by winner
+    _community_pot += _active_players[j].get_pot();
+    _active_players[j].clear_pot();
+
+  }
+
+  j = 0;  // reinitialises j as 0 again
+
   for (int i =j+1; i < _active_players.size(); i++){
     if(winner.get_score() <= _active_players[i].get_score()){
       if (winner.get_score() == _active_players[i].get_score()){ // potentially a draw
@@ -309,6 +319,7 @@ void Game::declare_winner(){
 
       else{ // the candidate winner has the lower score, transfer the information of the candidate winner to the winner object
         winner = _active_players[i]; // let the winner be the i'th Player object which has the presently highest score
+        _active_players[i].claim_pot(_community_pot); // actual winner Player object claims the pot, not the object called winner
         draw = false; // put this line here just in case previous there were cases where other Plyers objects have the same score
       }
 
