@@ -27,12 +27,20 @@ public:
   int get_score(); // returns the score from the Player object's hand
   void show_score(); //test method to check the scores during development
   void empty_pocket(); // empties the pocket container of pocket Card objects
+  void bet(int amount); // returns the amount the Player object's puts into the pot, in the meantime deducting that amount from Player object's bankroll
+  void call(int remain); // bets the amount such that the Player object's pot is level with the highest amount of the round
+  void raise_(int amount); // raises the call amount by one unit (1 _big_blind at pre-flop and flop, 2 _big_blind at turn and river)
+  int get_pot();
+  void show_bankroll();// displays bankroll during game
+  // void collect_pot(int pot_money); // collects the pot [FOR WINNERS ONLY]
 
 protected:
   std::string player_name;
   std::vector<Card> _pocket_cards; // container with two spaces to hold the cards
   std::vector<Card>::iterator _pocket_iter; // maybe redundant
   int _score = 0;
+  int _bankroll = 1000; // every Player object gets a bankroll of default 1000 C++ currency on initialisation
+  int _pot = 0;
 
 };
 

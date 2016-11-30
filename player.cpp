@@ -71,5 +71,41 @@ void Player::show_score(){
 void Player::empty_pocket(){ // empties the pocket container of pocket Card objects
 
   _pocket_cards.clear();
-  
+
 }
+
+void Player::bet(int amount){
+
+  _bankroll -= amount; // deducts the amount from Player object's bankroll
+  _pot += amount; // puts the amount into Player object's pot
+}
+
+void Player::call(int remain){
+  if (_bankroll > 0){
+    int amount = remain - _pot;
+    bet(amount);
+  }
+
+}
+
+void Player::raise_(int amount){
+  if(_bankroll >0){
+    call(amount);
+  }
+}
+
+// void Player::raise(){
+//   call()
+// }
+
+int Player::get_pot(){
+  return _pot;
+}
+
+void Player::show_bankroll(){
+  std::cout << "Bankroll: " << _bankroll << std::endl;
+}
+
+// void Player::collect_pot(int pot_money){
+//   _bankroll += pot_money;
+// }
