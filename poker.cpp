@@ -43,6 +43,16 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   start(); //starts the actual dynamic of the game
 
+  //Uncomment below to start a full game
+  while(_active_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
+
+    _players.push_back(_players[0]);
+    _players.erase(_players.begin());
+    _active_players.push_back(_active_players[0]);
+    _active_players.erase(_active_players.begin()); // erase the Player object that was was the front to avoid duplication
+    start();
+
+  }
 
 }
 
@@ -67,7 +77,7 @@ void Game::start(){
   game_deck.shuffle();
 
   // last three Player objects of the game are Dealer, Small and Big Blind respectively
-  std::cout << "Dealer: " << _active_players.rbegin()[2].show_name() << " \nSmall Blind: " << _active_players.rbegin()[1].show_name() << " \nBig Blind: " << _active_players.rbegin()[0].show_name() << std::endl;
+  std::cout << " \nSmall Blind: " << _active_players.rbegin()[1].show_name() << " \nBig Blind: " << _active_players.rbegin()[0].show_name() << std::endl;
   std::cout << "\nDealing pocket cards to players...\n" << std::endl;
 
   deal_pocket(game_deck); // starts dealing each player their pocket cards
@@ -136,7 +146,7 @@ void Game::start(){
 
   declare_winner(); // declares the winner and ends the game
 
-  // next_round(); //container gets destructed when it goes out of scope
+  _board.clear();
 
 }
 
@@ -163,9 +173,21 @@ void Game::bet(int &amount, int raise_unit){
 
     //call
     if(response == 'c'){// call: match with the current raised value
-      _active_players[i].call(amount);
-      _active_players[i].show_bankroll();
-      _call_counter ++;
+      if(_active_players[i].get_bankroll() > amount){
+        _active_players[i].call(amount);
+        _active_players[i].show_bankroll();
+        _call_counter ++;
+      }
+
+      else{ // Player object has insufficient funds, must remove from active AND waiting container
+        std::cout << "Insufficient funds as call amount is greater than available bankroll. Player " << _active_players[i].show_name() << "is eliminated from the game." << std::endl;
+        _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
+        _community_pot += _active_players[i].get_bankroll(); // takes whatever that is left in the Player object's _bankroll
+        _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects
+        i--; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
+
+      }
+
     }
 
     // raise
@@ -199,6 +221,7 @@ void Game::bet(int &amount, int raise_unit){
     else{
       std::cerr << "Invalid response. Please try again." << std::endl;
     }
+
   }
 
   std::cout << "\nChecking to go to next round...\n" << std::endl;
@@ -345,13 +368,13 @@ void Game::declare_winner(){
 
 }
 
-void Game::next_round(){
-  _board.clear(); // destroys all community Card objects
-
-  for (int i = 0; i < _players.size(); i++){ // removes all pocket Card objects from all Player objects
-    _players[i].empty_pocket();
-  }
-
-  start();
-
-}
+// void Game::next_round(){
+//   _board.clear(); // destroys all community Card objects
+//
+//   for (int i = 0; i < _players.size(); i++){ // removes all pocket Card objects from all Player objects
+//     _players[i].empty_pocket();
+//   }
+//
+//   start();
+//
+// }
