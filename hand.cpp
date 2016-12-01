@@ -112,7 +112,7 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
           four_kind = true; // it's a Four of a Kind
           position = i;
           for(position; position < i+4; position++){
-            Card temp = hand[position];
+            Card temp = _hand[position];
             hand.push_back(temp);
           }
 
@@ -122,7 +122,7 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
           three_kind = true;
           position = i;
           for(position; position < i+3; position++){
-            Card temp = hand[position];
+            Card temp = _hand[position];
             hand.push_back(temp);
           }
 
@@ -219,6 +219,67 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
   }
 
   else if(pair >= 2){ // 2-Pairs // THIS IS TEMPORARY SOLUTION; in Texas Hold'em there is no more than 2 pairs since maximum hand size is 5, will do value comparison later on
+    if(pair ==2){ // 2-Pairs case
+      //first, remove pair cards from _temp_hand
+      for(int i =0; i < _temp_hand.size(); i++){
+
+        if (_temp_hand[i].getValue() == _hand[0].getValue()){ // if the Card object in _temp_hand is same as the Card object in _hand
+          _temp_hand.erase(_temp_hand.begin()+i); // erase the duplicate Card object in _temp_hand
+          i--;
+        }
+
+        else if(_temp_hand[i].getValue() == _hand[2].getValue()){
+          _temp_hand.erase(_temp_hand.begin()+i); // erase the duplicate Card object in _temp_hand
+          i--;
+        }
+
+      }
+
+      //now, _temp_hand is a container full of possible kicker Card object
+      int p = 0;
+      Card kicker = _temp_hand[p];
+
+      for(int k = p+1; k < _temp_hand.size(); k++){
+        if(kicker.getValue() < _temp_hand[k].getValue()){
+          kicker = _temp_hand[k]; // switch potential kicker Card object to the new card
+
+        }
+      }
+      _hand.push_back(kicker);
+    }
+
+    else if(pair >2){
+      //do something else
+      //remove lowest value pair first, then consider the kicker card
+      std::sort(_hand.begin(),_hand.end());
+      _hand.erase(_hand.begin(),_hand.begin()+1); // remove the first Pair because they will have the lowest value
+      for(int i =0; i < _temp_hand.size(); i++){
+
+        if (_temp_hand[i].getValue() == _hand[0].getValue()){ // if the Card object in _temp_hand is same as the Card object in _hand
+          _temp_hand.erase(_temp_hand.begin()+i); // erase the duplicate Card object in _temp_hand
+          i--;
+        }
+
+        else if(_temp_hand[i].getValue() == _hand[2].getValue()){
+          _temp_hand.erase(_temp_hand.begin()+i); // erase the duplicate Card object in _temp_hand
+          i--;
+        }
+
+      }
+
+      //now, _temp_hand is a container full of possible kicker Card object
+      // int p = 0;
+      std::sort(_temp_hand.begin(), _temp_hand.end());
+      Card kicker = *_temp_hand.rbegin(); // let kicker be the last Card object (also the one with the highest value) from the _temp_hand
+
+      // for(int k = p+1; k < _temp_hand.size(); k++){
+      //   if(kicker.getValue() < _temp_hand[k].getValue()){
+      //     kicker = _temp_hand[k]; // switch potential kicker Card object to the new card
+      //
+      //   }
+      // }
+      _hand.push_back(kicker);
+    }
     score = 3;
   }
 
@@ -256,10 +317,10 @@ void Hand::flush_check(std::vector<Card> hand){
     if(suit_counter == 5){ // if found a flush, exit immediately
       flush= true;
 
-      // for(int k = position; k < position+5; k++){
-      //   Card temp = hand[k];
-      //   hand.push_back(temp);
-      // }
+      for(int k = position; k < position+5; k++){
+        Card temp = hand[k];
+        _hand.push_back(temp);
+      }
       //
       // hand.erase(hand.begin(),hand.end()-5);
       // std::sort(hand.begin(),hand.end());
@@ -303,11 +364,11 @@ void Hand::straight_flush_check(std::vector<Card> hand){
     // for the reason suit_counter counts only to 4 (instead of 5), please refer to the top if statement
     if(suit_counter == 4){
       straight_flush = true;
-      // for (int k = position; k <position+5; k++){ // pushes the straight flush to the back of the container
-      //   Card temp = hand[k];
-      //   hand.push_back(temp);
-      //
-      // }
+      for (int k = position; k <position+5; k++){ // pushes the straight flush to the back of the container
+        Card temp = hand[k];
+        _hand.push_back(temp);
+
+      }
       // hand.erase(hand.begin(),hand.end()-5); // erase the rest of the container, leaving only the straigth flush in the back
       // std::sort(hand.begin(),hand.end());
 
