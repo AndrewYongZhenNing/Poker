@@ -41,7 +41,7 @@ Hand::Hand(Player &player, std::vector<Card> board){ // evaluates the hands of e
   //
   // }
 
-  std::cout << "\nThe true hand for " << player.show_name() << " is: " << std::endl;
+  std::cout << "\nThe hand for " << player.show_name() << " is: " << std::endl;
 
   // for (_temp_iter = _hand.begin();_temp_iter != _hand.end(); _temp_iter++){ // testing purposes
   //
@@ -122,7 +122,7 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
           three_kind = true;
           position = i;
           for(position; position < i+3; position++){
-            Card temp = _hand[position];
+            Card temp = _temp_hand[position];
             hand.push_back(temp);
           }
 
@@ -199,6 +199,20 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
   }
 
   else if(four_kind){
+    // first remove the Card objects in _temp_hand that are equivalent to those in _hand at the moment
+    for(int i =0; i < _temp_hand.size(); i++){
+
+      if (_temp_hand[i].getValue() == _hand[0].getValue()){ // if the Card object in _temp_hand is same as the Card object in _hand
+        _temp_hand.erase(_temp_hand.begin()+i); // erase the duplicate Card object in _temp_hand
+        i--;
+      }
+    }
+
+    // append the highest kickers for Three of a Kind
+    Card temp = _temp_hand.back();
+    _hand.push_back(temp);
+    _temp_hand.pop_back();
+
     score = 8;
   }
 
@@ -215,6 +229,22 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
   }
 
   else if(three_kind){
+    // first remove the Card objects in _temp_hand that are equivalent to those in _hand at the moment
+    for(int i =0; i < _temp_hand.size(); i++){
+
+      if (_temp_hand[i].getValue() == _hand[0].getValue()){ // if the Card object in _temp_hand is same as the Card object in _hand
+        _temp_hand.erase(_temp_hand.begin()+i); // erase the duplicate Card object in _temp_hand
+        i--;
+      }
+    }
+
+    // append two of the highest kickers for Three of a Kind
+    for (int i = 0; i <2; i ++){
+      Card temp = _temp_hand.back();
+      _hand.push_back(temp);
+      _temp_hand.pop_back();
+    }
+
     score = 4;
   }
 
@@ -284,12 +314,35 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
   }
 
   else if(pair == 1){ // 1-Pair
+
+    //first, remove pair cards from _temp_hand
+    for(int i =0; i < _temp_hand.size(); i++){
+
+      if (_temp_hand[i].getValue() == _hand[0].getValue()){ // if the Card object in _temp_hand is same as the Card object in _hand
+        _temp_hand.erase(_temp_hand.begin()+i); // erase the duplicate Card object in _temp_hand
+        i--;
+      }
+    }
+
+    for (int j = 0; j <3; j++){
+      Card temp = _temp_hand.back();
+      _hand.push_back(temp);
+      _temp_hand.pop_back();
+    }
+
     score = 2;
   }
 
   else if(pair == 0){ // high card
+    for (int i = 0; i <5 ; i++){ // give the Player object 5 high cards such that Player object can compare to other Player objects more than once to determine a winner amongst two high card hands
+      Card temp = _temp_hand.back();
+      _hand.push_back(temp);
+      _temp_hand.pop_back();
+    }
     score = 1;
   }
+
+  _
 
   return score;
 }
