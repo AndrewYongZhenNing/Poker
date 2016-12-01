@@ -19,34 +19,54 @@ Hand::Hand(Player &player, std::vector<Card> board){ // evaluates the hands of e
 
     temp.show_card();
 
-    _hand.push_back(*_temp_iter); //dereferencing _temp_iter will give one of the two cards in the Player's pockets where the pointer is pointing at
+    _temp_hand.push_back(*_temp_iter); //dereferencing _temp_iter will give one of the two cards in the Player's pockets where the pointer is pointing at
 
   }
 
   //fill _hand container with board's community cards
   for (_temp_iter = board.begin();_temp_iter != board.end(); _temp_iter++){
 
-    _hand.push_back(*_temp_iter); // dereferencing _temp_iter will give one of the community cards in the board at game
+    _temp_hand.push_back(*_temp_iter); // dereferencing _temp_iter will give one of the community cards in the board at game
 
   }
 
-  std::cout << "\nThe hand is for " << player.show_name() << " is: " << std::endl;
+  // std::cout << "\nThe hand for " << player.show_name() << " is: " << std::endl;
+  //
+  // // print the Hand to check
+  // for (_temp_iter = _temp_hand.begin();_temp_iter != _temp_hand.end(); _temp_iter++){ // testing purposes
+  //
+  //   Card temp = *_temp_iter;
+  //
+  //   temp.show_card();
+  //
+  // }
 
-  // print the Hand to check
+  std::cout << "\nThe true hand for " << player.show_name() << " is: " << std::endl;
+
+  // for (_temp_iter = _hand.begin();_temp_iter != _hand.end(); _temp_iter++){ // testing purposes
+  //
+  //   Card temp = *_temp_iter;
+  //
+  //   temp.show_card();
+  //
+  // }
+
+  std::cout << "" << std::endl;
+
+  //sorts and give the Hand object a score
+  player.assign_score(evaluate(_temp_hand)); // assigns the score to the Player object this Hand is for
   for (_temp_iter = _hand.begin();_temp_iter != _hand.end(); _temp_iter++){ // testing purposes
 
     Card temp = *_temp_iter;
 
     temp.show_card();
-
   }
-
-  std::cout << "" << std::endl;
-
-  //sorts and give the Hand object a score
-  player.assign_score(evaluate(_hand)); // assigns the score to the Player object this Hand is for
+  std::cout << "\n" << std::endl;
   player.show_score(); //a method to check if the scores are evaluated properly
   player.get_score();
+
+
+
 
 }
 
@@ -58,7 +78,7 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
 
   std::vector<Card>::iterator sort_iter; // create a sorting iterator
   int score = 0;
-  int start = 0;
+  int position = 0;
 
   std::cout << "Sorting begins..." << std::endl;
   std::sort(hand.begin(),hand.end());
@@ -90,23 +110,22 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
       if (i+2 < hand.size() && hand[i].getValue() == hand[i+2].getValue()){ // is current Card object value same as next next Card object value?
         if(i+3 < hand.size() && hand[i].getValue() == hand[i+3].getValue()){ // is current Card object value same as next next NEXT Card object value?
           four_kind = true; // it's a Four of a Kind
-          // for(i; i < i+4; i++){
-          //   Card temp = hand[i];
-          //   hand.push_back(temp);
-          // }
-          // hand.erase(hand.begin(),hand.end()-4);
-          // std::sort(hand.begin(),hand.end());
+          position = i;
+          for(position; position < i+4; position++){
+            Card temp = hand[position];
+            hand.push_back(temp);
+          }
 
         }
 
         else if (i+3 < hand.size() && hand[i].getValue() != hand[i+3].getValue()){ // it's a Three of a Kind
           three_kind = true;
-          // for(i; i < i+3; i++){
-          //   Card temp = hand[i];
-          //   hand.push_back(temp);
-          // }
-          // hand.erase(hand.begin(),hand.end()-3);
-          // std::sort(hand.begin(),hand.end());
+          position = i;
+          for(position; position < i+3; position++){
+            Card temp = hand[position];
+            hand.push_back(temp);
+          }
+
         }
 
       }
@@ -118,10 +137,11 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
         // _pair.push_back(hand[i]);
         // _pair.push_back(hand[i+1]);
         pair +=1;
-        //
-        for(i; i < i+2; i++){
-          Card temp = hand[i];
-          hand.push_back(temp);
+        position = i;
+        for(position; position < i+2; position++){
+          // std::cout << "Checkpoint 1.1" << std::endl;
+          Card temp = hand[position];
+          _hand.push_back(temp);
         }
         // save the erasing and sorting for when it is determined whether or not it is 1-Par or 2-Pairs
 
@@ -134,10 +154,12 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
 
       else if(i ==0){ // it is definitely a 1-Pair
         pair +=1;
+        position = i;
 
-        for(i; i < i+2; i++){
-          Card temp = hand[i];
-          hand.push_back(temp);
+        for(position; position < i+2; position++){
+          // std::cout << "Checkpoint 2.1" << std::endl;
+          Card temp = hand[position];
+          _hand.push_back(temp);
         }
 
       }
@@ -147,7 +169,12 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
       if(hand[i+2].getValue() == hand[i].getValue()+2){//is the next Card object two value higher than the current Card object?
         if(hand[i+3].getValue() == hand[i].getValue()+3){ //is the next Card object three value higher than the current Card object?
           if (hand[i+4].getValue() == hand[i].getValue()+4){
-            straight = true;// it's a Flush
+            straight = true;// it's a straight
+            position = i;
+            for (position; position < i+5; position ++){
+              Card temp = hand[position];
+              _hand.push_back(temp);
+            }
           }
         }
       }
@@ -192,14 +219,10 @@ int Hand::evaluate(std::vector<Card> &hand){ // sorts and prints out the sorted 
   }
 
   else if(pair >= 2){ // 2-Pairs // THIS IS TEMPORARY SOLUTION; in Texas Hold'em there is no more than 2 pairs since maximum hand size is 5, will do value comparison later on
-    // hand.erase(hand.begin(),hand.end()-5);
-    // std::sort(hand.begin(),hand.end());
     score = 3;
   }
 
   else if(pair == 1){ // 1-Pair
-    // hand.erase(hand.begin(),hand.end()-2);
-    // std::sort(hand.begin(),hand.end());
     score = 2;
   }
 
@@ -214,7 +237,7 @@ void Hand::flush_check(std::vector<Card> hand){
 
   char suit_set[4] = {'H', 'C', 'S', 'D'};
   int suit_counter=0; // create a counter to use for each suit
-  int start = 0; // create a variable to track the starting position of the flush in the hand
+  int position = 0; // create a variable to track the starting position of the flush in the hand
 
   for(int i = 0; i < 4; i++){ // for every suit
 
@@ -224,7 +247,7 @@ void Hand::flush_check(std::vector<Card> hand){
         // std::cout << "In flush_check, temp_suit:"<< temp.getSuit() << " suit_set: " << suit_set[i] << std::endl; // for testing purposes
         suit_counter += 1;
         if (suit_counter == 5){
-          start = j-4;
+          position = j-4;
         }
       }
 
@@ -233,7 +256,7 @@ void Hand::flush_check(std::vector<Card> hand){
     if(suit_counter == 5){ // if found a flush, exit immediately
       flush= true;
 
-      // for(int k = start; k < start+5; k++){
+      // for(int k = position; k < position+5; k++){
       //   Card temp = hand[k];
       //   hand.push_back(temp);
       // }
@@ -259,7 +282,7 @@ void Hand::flush_check(std::vector<Card> hand){
 void Hand::straight_flush_check(std::vector<Card> hand){
   char suit_set[4] = {'H', 'C', 'S', 'D'};
   int suit_counter=0; // create a counter to use for each suit
-  int start = 0;
+  int position = 0;
 
   for(int i =0; i < 4; i++){ // check through every Suit
 
@@ -271,7 +294,7 @@ void Hand::straight_flush_check(std::vector<Card> hand){
         // this if statement helps to determine the starting position of the straight flush
         // note suit_counter is equals to 4 (rather than 5) because the if statement above has imposed that if the first 4 elements satisfy the condition AND the 5th element is the same as the 4th, the loop would end at the 4th element, so suit_counter will only count 4
         if(suit_counter == 4){ // provided that sui_counter found 5 consecutive Card objects, let the starting position be the current position subtracted by 4
-          start = j-3;
+          position = j-3;
         }
 
       }
@@ -280,7 +303,7 @@ void Hand::straight_flush_check(std::vector<Card> hand){
     // for the reason suit_counter counts only to 4 (instead of 5), please refer to the top if statement
     if(suit_counter == 4){
       straight_flush = true;
-      // for (int k = start; k <start+5; k++){ // pushes the straight flush to the back of the container
+      // for (int k = position; k <position+5; k++){ // pushes the straight flush to the back of the container
       //   Card temp = hand[k];
       //   hand.push_back(temp);
       //
