@@ -63,3 +63,7 @@ void Card::show_card(){ // displays the Card object on the terminal (with A K Q 
 bool Card::operator<(const Card &rhs){ // returns a boolean that the right hand side Card object's value is larger than the left hand side Card object's value
   return (_value < rhs._value);
 }
+
+void Card::switch_ace(){
+  _value = 14;
+}
