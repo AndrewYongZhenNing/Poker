@@ -6,6 +6,11 @@
 
 Deck::Deck(){
 
+   _suit[0] = 'H' ;
+   _suit[1] = 'C';
+   _suit[2] = 'S';
+   _suit[3] = 'D';
+
   for (int i = 0; i < 4; i++){ // for every suit...
 
     for (int j = 2; j < 15; j++){ //... give it twelve cards (Card object)

@@ -687,8 +687,8 @@ void Game::simulation(){
   //
 
   //Selected starting hand for testing
-  Card c1 = Card('H',14); // Ace of Hearts
-  Card c2 = Card('H',13); // King of Hearts
+  Card c1 = Card('C',9); // Ace of Hearts
+  Card c2 = Card('S',14); // King of Hearts
   int win = 0;
   int total = 0;
 

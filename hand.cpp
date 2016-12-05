@@ -600,7 +600,7 @@ void Hand::straight_flush_check(){
   int count = 0;
 
   for(int i =0; i < 4; i++){ // check through every Suit
-
+    suit_counter = 0; // initialises it as 0 for every suit to prevent carrying over counters from previous suit
     for (int j = 0; j < _temp_hand.size()-1; j++){ // -1 to ensure that j+1 is still within container size (prevent segmentation fault)
 
       if (_temp_hand[j].getSuit() == suit_set[i] && _temp_hand[j+1].getSuit() == _temp_hand[j].getSuit() && _temp_hand[j+1].getValue() == _temp_hand[j].getValue()+1){

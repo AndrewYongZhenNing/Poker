@@ -25,7 +25,7 @@ public:
 
 protected:
 
-  char _suit[4] = {'H', 'C', 'S', 'D'}; // defines the symbols for each suit using char
+  char _suit[4]; // defines the symbols for each suit using char
   std::vector<Card> _deck; // takes in objects constructed by Card
   std::vector<Card>::iterator _deck_iter; // a pointer for going through the Deck
 
