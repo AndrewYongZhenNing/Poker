@@ -141,7 +141,7 @@ void Game::start(){
 
   std::cout << "" << std::endl;
 
-  bet(call_amount,_big_blind); // flop betting happens in a for loop in here
+  //bet(call_amount,_big_blind); // flop betting happens in a for loop in here
 
   // bet_next_round(call_amount,_big_blind);
 
@@ -153,7 +153,7 @@ void Game::start(){
 
   std::cout << "" << std::endl;
 
-  bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
+  //bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
   // bet_next_round(call_amount, 2*_big_blind);
 
@@ -165,7 +165,7 @@ void Game::start(){
 
   std::cout << "" << std::endl;
 
-  bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
+  //bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
   std::cout << "\n" << std::endl;
 
@@ -198,7 +198,7 @@ void Game::start(){
         std::cin >> _response;
         if(_response == 'y'){ // remove Player object from
           _players.erase(_players.begin()+i);
-          _active_players.erase(_players.begin()+i);
+          _active_players.erase(_active_players.begin()+i);
           i--;
 
         }
@@ -687,12 +687,12 @@ void Game::simulation(){
   //
 
   //Selected starting hand for testing
-  Card c1 = Card('C',9); // Ace of Hearts
-  Card c2 = Card('S',14); // King of Hearts
+  Card c1 = Card('H',14); // Ace of Hearts
+  Card c2 = Card('H',13); // King of Hearts
   int win = 0;
   int total = 0;
 
-  while(total < 2000){
+  while(total < 1000){
 
     std::cout << "Round: " << total + 1 << std::endl;
 
