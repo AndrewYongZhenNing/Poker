@@ -21,6 +21,7 @@ public:
   void show(); // test purposes: show the entire deck
   void new_top(); // replaces the top card (can also be used analogously as pop_front()!)
   Card get_top(); // returns an object of type Card
+  void remove_card(Card &c); // remove a selected Card object from the Deck (for simulation purposes)
 
 protected:
 

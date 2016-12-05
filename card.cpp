@@ -30,7 +30,7 @@ int Card::getValue(){
 
 void Card::show_card(){ // displays the Card object on the terminal (with A K Q J in place of 1,13,12,11)
 
-  if (_value == 1){
+  if (_value == 14 || _value == 1){
 
     std::cout << _suit << "A" << " " << std::flush; // flush shouldn't be affected here
 
@@ -65,5 +65,5 @@ bool Card::operator<(const Card &rhs){ // returns a boolean that the right hand 
 }
 
 void Card::switch_ace(){
-  _value = 14;
+  _value = 1;
 }

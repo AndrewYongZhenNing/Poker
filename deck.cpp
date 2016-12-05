@@ -8,7 +8,7 @@ Deck::Deck(){
 
   for (int i = 0; i < 4; i++){ // for every suit...
 
-    for (int j = 1; j < 14; j++){ //... give it twelve cardsd (Card object)
+    for (int j = 2; j < 15; j++){ //... give it twelve cards (Card object)
 
       Card card(_suit[i],j);
 
@@ -65,5 +65,15 @@ Card Deck::get_top(){ // gets the card at the top of the Deck (container)
   // _deck.erase(_deck_iter); // ensures that top card is gone from the deck
 
   // std::cout << top_card.getSuit() << top_card.getValue() << std::endl; // for visiual purposes on the temrinal
+
+}
+
+void Deck::remove_card(Card &c){ // remove a selected Card object from the Deck (for simulation purposes)
+
+  for(int i = 0; i < _deck.size(); i++){
+    if (_deck[i].getSuit() == c.getSuit() && _deck[i].getValue() == c.getValue()){
+      _deck.erase(_deck.begin()+i);
+    }
+  }
 
 }

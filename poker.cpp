@@ -5,55 +5,84 @@
 
 Game::Game(){ // upon initialising, set number of players (Player objects), create a Deck (object) and deal cards to Player objects
 
-  std::cout << "Welcome to a game of Poker." << std::endl;
+  std::cout << "Welcome!" << std::endl;
+
+  std::cout << "\n Would you like to play a game of Poker (p) or would you like to review a statistical analysis of the game(s)? (p/s)";
+  std::cin >> _response;
+
+  if (_response == 'p'){
+
+    std::cout << "\nWould you like to include AI?(y/n)";
+    std::cin >>_response;
+
+    std::cout << "Please enter the number of players:";
+    std::cin >> _number_of_players;
+
+    // HOW DO I GET IT TO EXIT LOOP?
+    // try{
+    //   if (_number_of_players < 3){
+    //     throw 1;
+    //   }
+    // }
+    //
+    // catch(int exception){
+    //   std::cerr << "Insufficient players. Please ensure at least 3 players participate in the game." << std::endl;
+    //
+    // }
+
+    for(int i = 1; i <= _number_of_players; i++){ // create new players
+
+      std::cout << "Player " << i << ":" << std::endl;
+      Player p = Player();
+      _players.push_back(p);
+
+    }
+
+    if(_response == 'y'){ // include two AI
+      AI p1 = AI("Archimedes");
+      AI p2 = AI("Leibniz");
+      _players.push_back(p1);
+      _players.push_back(p2);
+
+    }
+
+    else if(_response == 'n'){ // redundant loop
+      // do nothing
+    }
+
+    std::random_shuffle(_players.begin(),_players.end());// shuffles the order of the Player objects such that game does not always start with Player 1 as the dealer
+
+    // Add Player objects on to a container of active Player objects now
+    for (int i = 0;i < _players.size(); i++){
+      _active_players.push_back(_players[i]);
+    }
 
 
-  std::cout << "Please enter the number of players:";
-  std::cin >> _number_of_players;
+    std::cout << "\nBegin game.\n" << std::endl;
 
-  // HOW DO I GET IT TO EXIT LOOP?
-  // try{
-  //   if (_number_of_players < 3){
-  //     throw 1;
-  //   }
-  // }
-  //
-  // catch(int exception){
-  //   std::cerr << "Insufficient players. Please ensure at least 3 players participate in the game." << std::endl;
-  //
-  // }
+    start(); //starts the actual dynamic of the game
 
-  for(int i = 1; i <= _number_of_players; i++){ // create new players
+    // Uncomment below to start a full game
+    while(_active_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
 
-    std::cout << "Player " << i << ":" << std::endl;
-    Player p = Player();
-    _players.push_back(p);
+      _players.push_back(_players[0]);
+      _players.erase(_players.begin());
+      _active_players.push_back(_active_players[0]);
+      _active_players.erase(_active_players.begin()); // erase the Player object that was was the front to avoid duplication
+      start();
+
+    }
+
+    if(_players.size() == 1){ // one Player object remaining in the waiting
+      std::cout << "Congratulations!\nThe overall winner of this game is Player " << _active_players[0].show_name() << "!" << std::endl;
+    }
 
   }
 
-  std::random_shuffle(_players.begin(),_players.end());// shuffles the order of the Player objects such that game does not always start with Player 1 as the dealer
-
-  // Add Player objects on to a container of active Player objects now
-  for (int i = 0;i < _players.size(); i++){
-    _active_players.push_back(_players[i]);
-  }
-
-
-  std::cout << "\nBegin game.\n" << std::endl;
-
-  start(); //starts the actual dynamic of the game
-
-  //Uncomment below to start a full game
-  while(_active_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
-
-    _players.push_back(_players[0]);
-    _players.erase(_players.begin());
-    _active_players.push_back(_active_players[0]);
-    _active_players.erase(_active_players.begin()); // erase the Player object that was was the front to avoid duplication
-    start();
+  else if(_response == 's'){
+    simulation();
 
   }
-
 }
 
 Game::~Game(){};
@@ -74,6 +103,7 @@ void Game::start(){
 
   Deck game_deck = Deck(); //initialises a Deck (object) of cards for gameplay
   std::cout << "Shuffling deck...\n" << std::endl;
+  // std::cout <<"deck size: \n" game_deck.size() << std::endl; //check it is a new deck every new game
   game_deck.shuffle();
 
   // last three Player objects of the game are Dealer, Small and Big Blind respectively
@@ -92,7 +122,7 @@ void Game::start(){
 
   call_amount += _big_blind;
 
-  bet(call_amount,_big_blind); // pre-flop betting happens in a for loop in here
+  // bet(call_amount,_big_blind); // pre-flop betting happens in a for loop in here
 
   // bet_next_round(call_amount,_big_blind); // in order to move to next round, all Player objects must have same amount in their pot
 
@@ -105,9 +135,9 @@ void Game::start(){
 
   deal_flop(game_deck);
 
-  std::cout << "Community cards at flop: " << std::endl;
+  std::cout << "Community cards at flop:\n " << std::endl;
 
-  show_board();
+  // show_board();
 
   std::cout << "" << std::endl;
 
@@ -119,9 +149,11 @@ void Game::start(){
 
   std::cout << "\nCommunity cards at turn: " << std::endl;
 
-  show_board();
+  // show_board();
 
-  bet(call_amount,2*_big_blind); // post betting happens in a for loop in here
+  std::cout << "" << std::endl;
+
+  bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
   // bet_next_round(call_amount, 2*_big_blind);
 
@@ -129,13 +161,13 @@ void Game::start(){
 
   std::cout << "\nCommunity cards at river: " << std::endl;
 
-  show_board();
+  // show_board();
 
   std::cout << "" << std::endl;
 
-  bet(call_amount,2*_big_blind); // post betting happens in a for loop in here
+  bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
-  // bet_next_round(call_amount, 2*_big_blind);
+  std::cout << "\n" << std::endl;
 
   // all the community cards are now on the table, now determine rank
 
@@ -145,8 +177,35 @@ void Game::start(){
   }
 
   declare_winner(); // declares the winner and ends the game
+  std::cout << "\n" << std::endl;
 
+  // for(int i )
   _board.clear();
+
+  for(int i =0; i < _players.size(); i++){
+    if(_players[i].get_bankroll() <= _big_blind){
+      std::cout << "Player " << _players[i].show_name() <<" has insufficient funds to continue into the next round. By default, Player " << _players[i].show_name() <<" has been discontinued from the game." << std::endl;
+      _players.erase(_players.begin()+i);
+      i--; // this is to ensure that the pointer does not skip a Player object upon erasing one;
+    }
+    //for human players
+    if(!_players[i].are_you_AI()){
+      std::cout <<"Player "<< _players[i].show_name() << ":\nContinue to next round?(y/n)";
+      std::cin >> _response;
+
+      if(_response == 'n'){
+        std::cout << "Would you like to quit? (Note: you get to keep your remainder bankroll but can no longer continue in this game.)\n(y/n)";
+        std::cin >> _response;
+        if(_response == 'y'){ // remove Player object from
+          _players.erase(_players.begin()+i);
+          _active_players.erase(_players.begin()+i);
+          i--;
+
+        }
+      }
+    }
+  }
+
 
 }
 
@@ -163,73 +222,114 @@ void Game::show_players(){ // test purposes: show how many players are in the ga
 
 void Game::bet(int &amount, int raise_unit){
 
-  _call_counter = 0;
+
   char response = 'n';
 
-  for (int i = 0; i < _active_players.size(); i++){
+  for (int i = 0; i < _active_players.size(); i++){ // for every Player object in _active_players
 
-    std::cout << _active_players[i].show_name() << ": Would you like to call/check(c), raise(r), or fold(f)?\nEnter your command (c,r or f)";
-    std::cin >> response;
+    if(_call_counter != _active_players.size()){ // whilst there are outstanding raises, loop this if statement
 
-    //call
-    if(response == 'c'){// call: match with the current raised value
-      if(_active_players[i].get_bankroll() > amount){
-        _active_players[i].call(amount);
-        _active_players[i].show_bankroll();
-        _call_counter ++;
+      if (_active_players[i].are_you_AI()){ // AI Player objects
+        // if(_active_players[i].show_name() == "Archimedes"){
+        //
+        // }
+        //at the moment, not concerned with AI behavious, just let them call()
+        if(_active_players[i].get_bankroll() > amount){
+          _active_players[i].call(amount);
+          // _active_players[i].show_bankroll();
+          _call_counter ++;
+        }
+        else if(_active_players[i].get_bankroll() < amount){
+          std::cout << "Insufficient funds as call amount is greater than available bankroll. Player " << _active_players[i].show_name() << " is eliminated from the game." << std::endl;
+          _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
+          _community_pot += _active_players[i].get_bankroll(); // takes whatever that is left in the Player object's _bankroll
+          _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects
+          i--; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
+        }
+
       }
 
-      else{ // Player object has insufficient funds, must remove from active AND waiting container
-        std::cout << "Insufficient funds as call amount is greater than available bankroll. Player " << _active_players[i].show_name() << "is eliminated from the game." << std::endl;
-        _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
-        _community_pot += _active_players[i].get_bankroll(); // takes whatever that is left in the Player object's _bankroll
-        _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects
-        i--; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
+      else if(!_active_players[i].are_you_AI()){ // human Player objects
+        show_board();
 
+        std::cout << "\n" << std::endl;
+
+        _active_players[i].show_pocket();
+
+        std::cout << "Would you like to call/check(c), raise(r), or fold(f)?\nEnter your command (c,r or f)";
+        std::cin >> response;
+
+        //call
+        if(response == 'c'){// call: match with the current raised value
+          if(_active_players[i].get_bankroll() > amount){
+            _active_players[i].call(amount);
+            _active_players[i].show_bankroll();
+            _call_counter ++;
+          }
+
+          else{ // Player object has insufficient funds, must remove from active AND waiting container
+            std::cout << "Insufficient funds as call amount is greater than available bankroll. Player " << _active_players[i].show_name() << " is eliminated from the game." << std::endl;
+            _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
+            _community_pot += _active_players[i].get_bankroll(); // takes whatever that is left in the Player object's _bankroll
+            _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects
+            i--; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
+
+          }
+
+        }
+
+        // raise
+        else if(response == 'r'){
+
+          amount+= raise_unit; // raise by one unit of big blind
+          _active_players[i].raise_(amount);
+          // _active_players[i].call(amount); // first even with the current highest
+          // _active_players[i].bet(raise_unit); // then add one unit of big blind
+          _active_players[i].show_bankroll();
+          // amount+= raise_unit; // raise by one unit of big blind
+          _call_counter = 0;
+        }
+
+        // fold
+        else if(response == 'f'){
+          // char fold_response;
+          // std::cout << "You selected fold(f), are you sure?"
+          std::cout << "Player " << _active_players[i].show_name() << " has folded." << std::endl;
+          _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
+          _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects; will rejoin in the subsequent games
+          i --; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
+
+          // std::cout << "Players remaining: " << std::endl;
+          // for (_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter ++){
+          //   Player temp = *_players_iter;
+          //   std::cout << temp.show_name() << std::endl;
+          // }
+        }
+
+        else{
+          std::cerr << "Invalid response. Please try again." << std::endl;
+        }
+      }
       }
 
-    }
-
-    // raise
-    else if(response == 'r'){
-
-      amount+= raise_unit; // raise by one unit of big blind
-      _active_players[i].raise_(amount);
-      // _active_players[i].call(amount); // first even with the current highest
-      // _active_players[i].bet(raise_unit); // then add one unit of big blind
-      _active_players[i].show_bankroll();
-      // amount+= raise_unit; // raise by one unit of big blind
-      _call_counter = 0;
-    }
-
-    // fold
-    else if(response == 'f'){
-      // char fold_response;
-      // std::cout << "You selected fold(f), are you sure?"
-      std::cout << "Player " << _active_players[i].show_name() << " has folded." << std::endl;
-      _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
-      _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects; will rejoin in the subsequent games
-      i --; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
-
-      // std::cout << "Players remaining: " << std::endl;
-      // for (_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter ++){
-      //   Player temp = *_players_iter;
-      //   std::cout << temp.show_name() << std::endl;
-      // }
-    }
 
     else{
-      std::cerr << "Invalid response. Please try again." << std::endl;
+      std::cout << "Off to next round." << std::endl;
+
     }
+
+
 
   }
 
   std::cout << "\nChecking to go to next round...\n" << std::endl;
 
   if (_call_counter != _active_players.size()){
-    _call_counter = 0;
+    // _call_counter = 0;
     bet(amount,raise_unit);
   }
+
+  // CHECK WHY THIS DOES NOT WORK (WITH JOE)
   // std::cout << "Size of active players: " << _active_players.size() << std::endl;
   // int i = 1;
   // for(_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter++){
@@ -244,18 +344,8 @@ void Game::bet(int &amount, int raise_unit){
   //   }
   //   i++;
   // }
-
+  _call_counter = 0;
 }
-
-// void Game::bet_next_round(int &amount, int raise_unit){ // checks if it is valid to move to next round by ensuring all Player objects have the same call amount in their own pot
-//   for(_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter++){
-//     Player check = *_players_iter;
-//     if (check.get_pot() != amount && _call_counter != _active_players.size()){
-//       bet(amount,raise_unit);
-//     }
-//   }
-//
-// }
 
 void Game::deal_pocket(Deck &deck){ // deal pocket cards to each player
 
@@ -334,9 +424,218 @@ void Game::declare_winner(){
   j = 0;  // reinitialises j as 0 again
 
   for (int i =j+1; i < _active_players.size(); i++){
+
     if(winner.get_score() <= _active_players[i].get_score()){
+
       if (winner.get_score() == _active_players[i].get_score()){ // potentially a draw
-        draw = true;
+
+        std::vector<Card> winner_hand = winner.get_hand();
+        std::vector<Card> contender_hand = _active_players[i].get_hand();
+
+        //evaluate High Card draw
+        if(winner.get_score() == 1){ // High Card draw
+          if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check for highest High Card value
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if equivalent, check for second highest High Card value
+            //jump straight to first kicker
+            if (winner_hand[3].getValue() < contender_hand[3].getValue()){
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if equivalent, check for third highest High Card value
+              // consider second kicker
+              if (winner_hand[2].getValue() < contender_hand[2].getValue()){
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+
+              else if(winner_hand[2].getValue() == contender_hand[3].getValue()){ // if equivalent, check for fourth highest High Card value
+                // consider final kicker
+                if(winner_hand[1].getValue() < contender_hand[1].getValue()){
+                  winner = _active_players[i];
+                  std::cout << winner.show_name() << std::endl;
+                }
+
+                else if(winner_hand[1].getValue() == contender_hand[1].getValue()){ // if equivalent, check for last High Card value
+                  if(winner_hand[0].getValue() < contender_hand[0].getValue()){
+                    winner = _active_players[i];
+                    std::cout << winner.show_name() << std::endl;
+                  }
+
+                  else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ //
+                    draw = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        //evaluate 1-Pair draw
+        else if(winner.get_score() == 2){ //1-Pair draw
+          //check if pair value is the same
+          std::cout << "Checkpoint PAIR" << std::endl;
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            std::cout << "Checkpoint PAIR 1" << std::endl;
+            //jump straight to first kicker
+            if (winner_hand[4].getValue() < contender_hand[4].getValue()){
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if first Kicker is equivalent
+              // consider second kicker
+              if (winner_hand[3].getValue() < contender_hand[3].getValue()){
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+
+              else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if seond Kicker is equivalent
+                // consider final kicker
+                if(winner_hand[2].getValue() < contender_hand[2].getValue()){
+                  winner = _active_players[i];
+                  std::cout << winner.show_name() << std::endl;
+                }
+
+                else if(winner_hand[2].getValue() == contender_hand[2].getValue()){
+                  draw = true;
+                }
+              }
+            }
+          }
+        }
+
+        //evaluate 2-Pair draw
+        else if(winner.get_score() == 3){
+          if(winner_hand[2].getValue() < contender_hand[2].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[2].getValue() == contender_hand[2].getValue()){ // if Pair values are the same
+            if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+              if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check kicker
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+
+              else if(winner_hand[4].getValue() == contender_hand[4].getValue()){
+                draw = true;
+              }
+            }
+          }
+        }
+
+        //evaluate Three Kind draw
+        else if(winner.get_score() == 4){
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if Pair values are the same
+              if(winner_hand[3].getValue() < contender_hand[3].getValue()){ // check first Pair
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+              else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if Pair values are the same
+                draw = true;
+              }
+            }
+          }
+        }
+
+        //evaluate Straight/Flush/Straight Flush draw (as these ranks have the same 5-card condition, hence can be evaluated by the same logic statement)
+        else if(winner.get_score() == 5 || winner.get_score() == 6 || winner.get_score() == 9){
+          if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if Pair values are the same
+            if(winner_hand[3].getValue() < contender_hand[3].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+            else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if Pair values are the same
+              if(winner_hand[2].getValue() < contender_hand[2].getValue()){ // check first Pair
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+              else if(winner_hand[2].getValue() == contender_hand[2].getValue()){ // if Pair values are the same
+                if(winner_hand[1].getValue() < contender_hand[1].getValue()){ // check first Pair
+                  winner = _active_players[i];
+                  std::cout << winner.show_name() << std::endl;
+                }
+                else if(winner_hand[1].getValue() == contender_hand[1].getValue()){ // if Pair values are the same
+                  if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check first Pair
+                    winner = _active_players[i];
+                    std::cout << winner.show_name() << std::endl;
+                  }
+                  else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // check first Pair
+                    draw = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        //evaluate Full House draw
+        else if(winner.get_score() == 7){
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check Three Kind value
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+            else if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              draw = true;
+            }
+          }
+        }
+
+        // evaluate Four Kind draw
+        else if(winner.get_score() == 8){
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+            else if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              draw = true;
+            }
+          }
+        }
 
       }
 
@@ -357,6 +656,10 @@ void Game::declare_winner(){
   }
 
   else if (draw){
+
+    for(int r = 0; r < _active_players.size(); r++){
+      //
+    }
     std::cout << "It's a draw between:" << std::endl;
 
     for(int p = 0; p < _active_players.size(); p++){
@@ -368,13 +671,348 @@ void Game::declare_winner(){
 
 }
 
-// void Game::next_round(){
-//   _board.clear(); // destroys all community Card objects
-//
-//   for (int i = 0; i < _players.size(); i++){ // removes all pocket Card objects from all Player objects
-//     _players[i].empty_pocket();
-//   }
-//
-//   start();
-//
-// }
+void Game::simulation(){
+
+  std::cout << "Begin simulation." << std::endl;
+
+  // User selection
+  // std::cout << "Please select a starting hand of your choice:\nUse the abbreviation H,S,C,D for the suit and 2,3,4,5,6,7,8,9,10,J,Q,K,A for the face value." << std::endl;
+  // for(int i = 0; i<2; i++){
+  //   std::cout << "Card #" << i+1 << ":" << std::endl;
+  //   std::cout << "Suit:";
+  //   std::cin>> _face;
+  //   std::cout << "Face Value:";
+  //   std::cin >> _value;
+  // }
+  //
+
+  //Selected starting hand for testing
+  Card c1 = Card('H',14); // Ace of Hearts
+  Card c2 = Card('H',13); // King of Hearts
+  int win = 0;
+  int total = 0;
+
+  while(total < 2000){
+
+    std::cout << "Round: " << total + 1 << std::endl;
+
+    Deck simulation_deck = Deck();
+
+    simulation_deck.remove_card(c1);
+    simulation_deck.remove_card(c2); // working fine - Deck printed out with AH and KH missing
+
+    // Now randomise the deck
+    simulation_deck.shuffle();
+
+    // Create two Player objects
+    Player test = Player("Archimedes");
+    test.deal(c1); // give test the two starting hand
+    test.deal(c2);
+
+    Player foe = Player("Leibniz");
+    _active_players.push_back(foe);
+    deal_pocket(simulation_deck); // allow the foe to be given random cards before push_back of test
+    _active_players.push_back(test);
+
+    deal_flop(simulation_deck);
+    deal_turn(simulation_deck);
+    deal_river(simulation_deck);
+
+    for (int i = 0; i < _active_players.size(); i++){
+      Hand(_active_players[i],_board, 's'); // takes in Player object's pocket cards and the community cards to go through evaluation
+
+    }
+
+    s_declare_winner(win);
+
+    // if(_active_players[1].get_score() > _active_players[0].get_score()){
+    //   // std::cout << test.show_name() << " score is: " << test.get_score() << std::endl;
+    //   win ++;
+    // }
+
+    total ++;
+
+    test.empty_pocket();
+    foe.empty_pocket();
+    _board.clear();
+    _active_players.clear();
+  }
+
+  //Winning percentage
+  float win_percentage = (win*1./total )*100;
+  std::cout << "Win: " << win_percentage << "%" << std::endl;
+
+
+  // declare_winner(); // declares the winner and ends the game
+  // std::cout << "\n" << std::endl;
+
+
+
+
+
+  std::cout << "Simulation ended. \nContinue?(y/n)";
+  std::cin >> _response;
+
+  if(_response == 'y'){
+    simulation();
+  }
+  else if(_response == 'n'){
+    std::cout << "Thank you for using this program. Please enjoy the game." << std::endl;
+  }
+}
+
+void Game::s_declare_winner(int &win){
+
+  int j = 0;
+  bool draw = false;
+  Player winner = _active_players[j]; // assume the first Player object in the _player container is the winner
+
+  for (int i =j+1; i < _active_players.size(); i++){
+
+    if(winner.get_score() <= _active_players[i].get_score()){
+
+      if (winner.get_score() == _active_players[i].get_score()){ // potentially a draw
+
+        std::vector<Card> winner_hand = winner.get_hand();
+        std::vector<Card> contender_hand = _active_players[i].get_hand();
+
+        //evaluate High Card draw
+        if(winner.get_score() == 1){ // High Card draw
+          if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check for highest High Card value
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if equivalent, check for second highest High Card value
+            //jump straight to first kicker
+            if (winner_hand[3].getValue() < contender_hand[3].getValue()){
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if equivalent, check for third highest High Card value
+              // consider second kicker
+              if (winner_hand[2].getValue() < contender_hand[2].getValue()){
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+
+              else if(winner_hand[2].getValue() == contender_hand[3].getValue()){ // if equivalent, check for fourth highest High Card value
+                // consider final kicker
+                if(winner_hand[1].getValue() < contender_hand[1].getValue()){
+                  winner = _active_players[i];
+                  std::cout << winner.show_name() << std::endl;
+                }
+
+                else if(winner_hand[1].getValue() == contender_hand[1].getValue()){ // if equivalent, check for last High Card value
+                  if(winner_hand[0].getValue() < contender_hand[0].getValue()){
+                    winner = _active_players[i];
+                    std::cout << winner.show_name() << std::endl;
+                  }
+
+                  else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ //
+                    draw = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        //evaluate 1-Pair draw
+        else if(winner.get_score() == 2){ //1-Pair draw
+          //check if pair value is the same
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            //jump straight to first kicker
+            if (winner_hand[4].getValue() < contender_hand[4].getValue()){
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if first Kicker is equivalent
+              // consider second kicker
+              if (winner_hand[3].getValue() < contender_hand[3].getValue()){
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+
+              else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if seond Kicker is equivalent
+                // consider final kicker
+                if(winner_hand[2].getValue() < contender_hand[2].getValue()){
+                  winner = _active_players[i];
+                  std::cout << winner.show_name() << std::endl;
+                }
+
+                else if(winner_hand[2].getValue() == contender_hand[2].getValue()){
+                  draw = true;
+                }
+              }
+            }
+          }
+        }
+
+        //evaluate 2-Pair draw
+        else if(winner.get_score() == 3){
+          if(winner_hand[2].getValue() < contender_hand[2].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[2].getValue() == contender_hand[2].getValue()){ // if Pair values are the same
+            if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+              if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check kicker
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+
+              else if(winner_hand[4].getValue() == contender_hand[4].getValue()){
+                draw = true;
+              }
+            }
+          }
+        }
+
+        //evaluate Three Kind draw
+        else if(winner.get_score() == 4){
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+
+            else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if Pair values are the same
+              if(winner_hand[3].getValue() < contender_hand[3].getValue()){ // check first Pair
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+              else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if Pair values are the same
+                draw = true;
+              }
+            }
+          }
+        }
+
+        //evaluate Straight/Flush/Straight Flush draw (as these ranks have the same 5-card condition, hence can be evaluated by the same logic statement)
+        else if(winner.get_score() == 5 || winner.get_score() == 6 || winner.get_score() == 9){
+          if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // if Pair values are the same
+            if(winner_hand[3].getValue() < contender_hand[3].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+            else if(winner_hand[3].getValue() == contender_hand[3].getValue()){ // if Pair values are the same
+              if(winner_hand[2].getValue() < contender_hand[2].getValue()){ // check first Pair
+                winner = _active_players[i];
+                std::cout << winner.show_name() << std::endl;
+              }
+              else if(winner_hand[2].getValue() == contender_hand[2].getValue()){ // if Pair values are the same
+                if(winner_hand[1].getValue() < contender_hand[1].getValue()){ // check first Pair
+                  winner = _active_players[i];
+                  std::cout << winner.show_name() << std::endl;
+                }
+                else if(winner_hand[1].getValue() == contender_hand[1].getValue()){ // if Pair values are the same
+                  if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check first Pair
+                    winner = _active_players[i];
+                    std::cout << winner.show_name() << std::endl;
+                  }
+                  else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // check first Pair
+                    draw = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        //evaluate Full House draw
+        else if(winner.get_score() == 7){
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check Three Kind value
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+            else if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              draw = true;
+            }
+          }
+        }
+
+        // evaluate Four Kind draw
+        else if(winner.get_score() == 8){
+          if(winner_hand[0].getValue() < contender_hand[0].getValue()){ // check second Pair
+            winner = _active_players[i];
+            std::cout << winner.show_name() << std::endl;
+          }
+
+          else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
+            if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              winner = _active_players[i];
+              std::cout << winner.show_name() << std::endl;
+            }
+            else if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+              draw = true;
+            }
+          }
+        }
+
+      }
+
+      else{ // the candidate winner has the lower score, transfer the information of the candidate winner to the winner object
+        winner = _active_players[i]; // let the winner be the i'th Player object which has the presently highest score
+        _active_players[i].claim_pot(_community_pot); // actual winner Player object claims the pot, not the object called winner
+        draw = false; // put this line here just in case previous there were cases where other Plyers objects have the same score
+      }
+
+    }
+
+  }
+
+  if (!draw){
+    std::cout << "The winner is: " << winner.show_name() << std::endl;
+    if(winner.show_name() == _active_players[1].show_name()){
+      win++;
+    }
+
+    //winner.collect_pot(_pot); // increases the winner's bankroll by the amount of bet on the particular round
+
+  }
+
+  else if (draw){
+
+    for(int r = 0; r < _active_players.size(); r++){
+      //
+    }
+    std::cout << "It's a draw between:" << std::endl;
+
+    for(int p = 0; p < _active_players.size(); p++){
+      if(_active_players[p].get_score() == winner.get_score()){ // prints those who share the same score
+        std::cout << _active_players[p].show_name() << std::endl;
+      }
+    }
+  }
+
+}

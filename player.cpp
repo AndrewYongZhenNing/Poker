@@ -10,6 +10,13 @@ Player::Player(){ //upon initialising, give player a name and container to hold 
   std::cin >> player_name;
   std::cout << player_name << " has joined the game.\n" << std::endl;
 
+  _AI = false;
+}
+
+Player::Player(std::string AI_name){ // constructor used for initialising AI
+
+  player_name = AI_name;
+  _AI = true;
 }
 
 Player::~Player(){};
@@ -19,18 +26,19 @@ std::string Player::show_name(){
   return player_name;
 }
 
-// void Player::show_pocket(){ // reveals the pocket card of the Player
-//
-//   std::cout << player_name << ", here are your pocket cards: " << std::endl;
-//
-//   for (_pocket_iter = _pocket_cards.begin(); _pocket_iter != _pocket_cards.end(); _pocket_iter++){
-//     std:: cout << *_pocket_iter << " " << std::flush;
-//   }
-//
-//   std::cout << "" << std::endl;
-//
-//
-// }
+void Player::show_pocket(){ // reveals the pocket card of the Player
+
+  std::cout << "Player " <<player_name << ", here are your pocket cards: " << std::endl;
+
+  for (_pocket_iter = _pocket_cards.begin(); _pocket_iter != _pocket_cards.end(); _pocket_iter++){
+    Card temp = *_pocket_iter;
+    std:: cout << temp.getSuit() << temp.getValue() << std::flush;
+  }
+
+  std::cout << "" << std::endl;
+
+
+}
 //
 // void Player::deal(){ //dereferences the Deck iter into the _pocket_cards container
 //
@@ -49,6 +57,17 @@ void Player::deal(Card &top_card){ // takes in a Deck object, then use get_top()
 std::vector<Card> Player::get_pocket(){ // returns the vector container with pocket cards in it
 
   return _pocket_cards; // << this is a vector
+}
+
+void Player::get_hand(std::vector<Card> hand){
+
+  _player_hand = hand;
+
+}
+
+std::vector<Card> Player::get_hand(){
+
+  return _player_hand;
 }
 
 void Player::assign_score(int hand_score){
@@ -94,13 +113,12 @@ void Player::raise_(int amount){
   }
 }
 
-// void Player::raise(){
-//   call()
-// }
-
-
 void Player::show_bankroll(){
   std::cout << "Bankroll: " << _bankroll << std::endl;
+}
+
+int Player::get_bankroll(){
+  return _bankroll;
 }
 
 int Player::get_pot(){
@@ -115,6 +133,22 @@ void Player::claim_pot(int community_pot){
   _bankroll += community_pot;
 }
 
+bool Player::are_you_AI(){
+  return _AI;
+}
+
 // void Player::collect_pot(int pot_money){
 //   _bankroll += pot_money;
 // }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// AI DERIVED CLASS
+
+
+AI::AI(std::string name):Player(name){
+
+  std::cout << player_name << " has joined the game.\n" << std::endl;
+
+}
+
+AI::~AI(){}

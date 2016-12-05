@@ -35,7 +35,9 @@ public:
   void show_board();
   // std::vector<Card> get_board();
   void declare_winner(); // determines the winner from the scores given to the Player objects
-  void next_round(); // clears the pocket and community cards, starts a new game
+
+  void simulation();
+  void s_declare_winner(int &win); // determines the winning percentage in a simulation
 
 protected:
   int _number_of_players;
@@ -48,6 +50,12 @@ protected:
   std::vector<Player> _active_players;
   std::vector<Card> _board; // this is where the community Card objects are placed
   std::vector<Card>::iterator _board_iter; // for checking if _board has at least 3 cards after flop
+  bool _include_AI = false;
+  char _response = 'n'; // for playing game/statistical analysis, including/excluding AI etc etc
+  char _face = 'f';
+  char _value = 'v';
+
+
 
 
 };

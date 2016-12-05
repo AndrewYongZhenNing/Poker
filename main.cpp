@@ -2,23 +2,14 @@
 #include <iostream>
 #include <ctime>
 
+#include <vector>
+
 
 int main(){
 
   srand(time(NULL));
 
 
-
-
-
-  // Player p1 = Player();
-
   Game poker = Game();
-
-
-
-
-
-
 
 }

@@ -20,13 +20,17 @@ class Hand{ // evaluates the hands for each player at showdown
 public:
 
   Hand(Player &player, std::vector<Card> board); // constructor takes a Player object and a vector (from Game)
+  Hand(Player &player, std::vector<Card> board, char command); // constructor takes a Player object and a vector (from Game)
   ~Hand();
-  int evaluate(std::vector<Card> hand); // [to be used in method evaluate, from Hand class] evaluates the points of each player's hand, returns an integer (the score)
-  void flush_check(std::vector<Card> hand);
-  void straight_flush_check(std::vector<Card> hand);
+  int evaluate(); // [to be used in method evaluate, from Hand class] evaluates the points of each player's hand, returns an integer (the score)
+  bool flush_check();
+  void straight_flush_check();
+  void ace_check();
+  int s_evaluate();
 
 protected:
 
+  std::vector<Card> _temp_hand;
   std::vector<Card> _hand;
   std::vector<Card> _temp_player; // create a temporary Player object to take player's pocket cards
   std::vector<Card>::iterator _temp_iter;
