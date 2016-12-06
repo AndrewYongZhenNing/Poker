@@ -174,11 +174,11 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
 
   //Evaluation of Card Rank begins here
 
-  //Checks for Straight Flush
+  //Checks for Straight Flush, Straight, Flush and Royal Flush
   straight_flush_check();
 
   //Checks for Flush
-  flush_check();
+  // flush_check();
 
   for(int i = 0; i < _temp_hand.size(); i++){
 
@@ -234,13 +234,6 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
           std::sort(temp_pair.begin(),temp_pair.end()); // ensures that it is always in ascending order
           // _hand.push_back(temp);
         }
-        // save the erasing and sorting for when it is determined whether or not it is 1-Par or 2-Pairs
-
-        // if (pair >2){ // if there are more
-        //   three_kind = true;
-        //   pair = 0
-        // }
-
       }
 
       else if(i ==0){ // it is definitely a Pair
@@ -261,70 +254,45 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
       }
     }
     // Check for Straight
-    else if(_temp_hand[i+1].getValue() == _temp_hand[i].getValue()+1){ //is the next Card object one value higher than the current Card object?
-      if(_temp_hand[i+2].getValue() == _temp_hand[i].getValue()+2){//is the next Card object two value higher than the current Card object?
-        if(_temp_hand[i+3].getValue() == _temp_hand[i].getValue()+3){ //is the next Card object three value higher than the current Card object?
-          if (_temp_hand[i+4].getValue() == _temp_hand[i].getValue()+4){
-            straight = true;// it's a straight
-            position = i;
-
-            // if(_temp_hand[i].getValue() == 2){ // if the start of the Straight is a 2, see if there is an Ace in the _temp_hand as well
-            //   int count = 0; //ensures that if there are two Ace Card objects, take one and leave for loop
-            //   for(int j = 0; j < _temp_hand.size(); j++){
-            //     if(count == 0){
-            //       if(_temp_hand[j].getValue()== 14){ // switch Ace value from 14 to 1
-            //         _temp_hand[j].switch_ace();
-            //         Card temp = _temp_hand[j];
-            //         _hand.push_back(temp);
-            //         count ++; // this ensures that once an Ace has been appended into _hand, take no more and fill it with the rest of the sequence
-            //       }
-            //     }
-            //
-            //   }
-            //   for(position; position < i+4; position ++){
-            //     Card temp = _temp_hand[position];
-            //     _hand.push_back(temp);
-            //   }
-            // }
-            //
-            // else{ // if the start of the Straight is NOT of value 2, append as normal
-            //   for (position; position < i+5; position ++){
-            //     Card temp = _temp_hand[position];
-            //     _hand.push_back(temp);
-            //   }
-            // }
-            for (position; position < i+5; position ++){ // append the straight Card objects to _hand
-                Card temp = _temp_hand[position];
-                _hand.push_back(temp);
-              }
-
-          }
-
-          else if(_temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
-            int count = 0; //ensures that if there are two Ace Card objects, take one and leave for loop
-            for(int j = 0; j < _temp_hand.size(); j++){
-              if(count == 0){
-                if(_temp_hand[j].getValue()== 14){ // switch Ace value from 14 to 1
-                  _temp_hand[j].switch_ace();
-                  Card temp = _temp_hand[j];
-                  _hand.push_back(temp);
-                  count ++; // this ensures that once an Ace has been appended into _hand, take no more and fill it with the rest of the sequence
-                  straight = true;
-                  position = i;
-                }
-              }
-            }
-            if(straight){
-              for(position; position < i+4; position ++){
-                Card temp = _temp_hand[position];
-                _hand.push_back(temp);
-            }
-
-            }
-          }
-        }
-      }
-    }
+    // else if(_temp_hand[i+1].getValue() == _temp_hand[i].getValue()+1){ //is the next Card object one value higher than the current Card object?
+    //   if(_temp_hand[i+2].getValue() == _temp_hand[i].getValue()+2){//is the next Card object two value higher than the current Card object?
+    //     if(_temp_hand[i+3].getValue() == _temp_hand[i].getValue()+3){ //is the next Card object three value higher than the current Card object?
+    //       if (_temp_hand[i+4].getValue() == _temp_hand[i].getValue()+4){
+    //         straight = true;// it's a straight
+    //         position = i;
+    //
+    //         for (position; position < i+5; position ++){ // append the straight Card objects to _hand
+    //             Card temp = _temp_hand[position];
+    //             _hand.push_back(temp);
+    //           }
+    //
+    //       }
+    //
+    //       else if(_temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
+    //         int count = 0; //ensures that if there are two Ace Card objects, take one and leave for loop
+    //         for(int j = 0; j < _temp_hand.size(); j++){
+    //           if(count == 0){
+    //             if(_temp_hand[j].getValue()== 14){ // switch Ace value from 14 to 1
+    //               _temp_hand[j].switch_ace();
+    //               Card temp = _temp_hand[j];
+    //               _hand.push_back(temp);
+    //               count ++; // this ensures that once an Ace has been appended into _hand, take no more and fill it with the rest of the sequence
+    //               straight = true;
+    //               position = i;
+    //             }
+    //           }
+    //         }
+    //         if(straight){
+    //           for(position; position < i+4; position ++){
+    //             Card temp = _temp_hand[position];
+    //             _hand.push_back(temp);
+    //         }
+    //
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     // else{ //it may be a high card
     //
@@ -340,7 +308,11 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
   std::cout << "" << std::endl;
 
   //assigning score to each possible Hand
-  if(straight_flush){
+  if(royal_flush){
+    score = 10;
+  }
+
+  else if(straight_flush){
     score = 9;
   }
 
@@ -388,13 +360,6 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
   }
 
   else if(straight){
-
-    //if the sequence is longer than 5, the program will pick every possible 5-Card sequence and append it to _hand
-    // remove the first n elements as they will be of the lowest values
-    if(_hand.size() > 5){
-      int cut_off = _hand.size() - 5;
-      _hand.erase(_hand.begin(),_hand.begin()+cut_off);
-    }
     score = 5;
   }
 
@@ -598,35 +563,123 @@ void Hand::straight_flush_check(){
   int suit_counter=0; // create a counter to use for each suit
   int position = 0;
   int count = 0;
+  char flush_suit = 'n'; // initialise a dummy suit index
+  std::vector<Card> flush_hand;
+  std::vector<Card> straight_hand;
 
-  for(int i =0; i < 4; i++){ // check through every Suit
-    suit_counter = 0; // initialises it as 0 for every suit to prevent carrying over counters from previous suit
-    for (int j = 0; j < _temp_hand.size()-1; j++){ // -1 to ensure that j+1 is still within container size (prevent segmentation fault)
+  //Check for flush
+  for(int i = 0; i < 4; i++){ // for every suit
 
-      if (_temp_hand[j].getSuit() == suit_set[i] && _temp_hand[j+1].getSuit() == _temp_hand[j].getSuit() && _temp_hand[j+1].getValue() == _temp_hand[j].getValue()+1){
+    for (int j = 0; j < _temp_hand.size(); j++){ // for every Card object in the container
+      Card temp = _temp_hand[j];
+      if(temp.getSuit() == suit_set[i]){
         suit_counter += 1;
-
-        // this if statement helps to determine the starting position of the straight flush
-        // note suit_counter is equals to 3 (rather than 5) because the if statement above has imposed that if the first 4 elements satisfy the condition AND the 5th element is the same as the 4th, the loop would end at the 4th element, so suit_counter will only count 4
-        if(suit_counter == 4){ // provided that suit_counter found 5 consecutive Card objects, let the starting position be the current position subtracted by 4
-           // position is current minus 3 because j starts from 0 and the nth iteration it is on the (n-1)'th position
-          position = j-3;
+        if (suit_counter == 5){
+          flush_suit = suit_set[i]; // records the suit that forms a flush in the hand
         }
       }
 
-      else if(suit_counter == 3){// if there are 4 Card objects of consecutive face value and suit
-        // by the time it passes the above if loop, j would by the 4th iteration as it has successfully incremented suit_counter 3 times before that corresponds to the 4 consecutive Card objects
-        if (_temp_hand[j+1].getSuit() != _temp_hand[j].getSuit() || _temp_hand[j+1].getValue() != _temp_hand[j].getValue()+1){
-          if(_temp_hand[j-3].getValue() == 2){ // if the first Card in a potential Straight Flush is 2, then find an Ace with the same suit as the last hope
-            if(count == 0){ // ensures only one Ace gets appended into _hand
-              for(int k = 0; k < _temp_hand.size(); k++){
-                if(_temp_hand[k].getValue() == 14 && _temp_hand[k].getSuit() == suit_set[i]){ // there is an Ace with the same suit
-                   _temp_hand[k].switch_ace(); //
-                   Card temp = _temp_hand[k];
-                   _hand.push_back(temp);
-                   position = j-2;
-                   count++;
-                   suit_counter++;
+    }
+
+    if(suit_counter == 5){ // if found a flush, exit immediately
+      flush= true;
+
+      // using the recorded flush_suit, get all the highest value flush Card objects
+      for(int k = 0; k < _temp_hand.size(); k++){
+        Card temp = _temp_hand.rbegin()[k]; // iterate from behind to get the highest value flush
+        if(temp.getSuit() == flush_suit && flush_hand.size() != 5){
+          flush_hand.push_back(temp);
+        }
+      }
+      //ensures flush cards are in ascending order
+      std::sort(flush_hand.begin(),flush_hand.end());
+    }
+
+    else{ // sets suit_counter back to zero if there are less than 5 Card objects of the current suit
+      suit_counter = 0;
+    }
+  }
+
+  //Check for straight
+  for(int i = 0; i < _temp_hand.size(); i++){
+    //only enter the straight if loops if straight_flush is false
+    if(!straight_flush){
+      if(i+1 < _temp_hand.size() && _temp_hand[i+1].getValue() == _temp_hand[i].getValue()+1){ //is the next Card object one value higher than the current Card object?
+        if(i+2 < _temp_hand.size() && _temp_hand[i+2].getValue() == _temp_hand[i].getValue()+2){//is the next Card object two value higher than the current Card object?
+          if(i+3 < _temp_hand.size() && _temp_hand[i+3].getValue() == _temp_hand[i].getValue()+3){ //is the next Card object three value higher than the current Card object?
+            if (i+4 < _temp_hand.size() && _temp_hand[i+4].getValue() == _temp_hand[i].getValue()+4){
+              straight = true;// it's a straight
+              position = i;
+
+              //if straight_hand already has a straight in it, the program will pick the highest sequence of 5 cards to be appended into _hand
+              // remove the first n elements as they will be of the lowest values
+              if(straight_hand.size() > 0){
+                straight_hand.clear();
+              }
+              //Now append latest Straight Card objects
+              for (position; position < i+5; position ++){ // append the straight Card objects to _hand
+                Card temp = _temp_hand[position];
+                straight_hand.push_back(temp);
+                std::sort(straight_hand.begin(),straight_hand.end());
+              }
+
+              //Compare with flush hand, if it is the same as flush, exit for loop
+              if(flush){
+                for(int z = 0; z < straight_hand.size(); z++){
+                  if(straight_hand[z].getValue() == flush_hand[z].getValue() && straight_hand[z].getSuit() == flush_hand[z].getSuit()){
+                    count ++;
+                  }
+                }
+                if(count == 5){ // if all 5 Card objects in each container are equivalent
+                  straight_flush = true;
+                  for (int j = 0; j < straight_hand.size(); j++){
+                    Card temp = straight_hand[j];
+                    _hand.push_back(temp);
+                  }
+                  if(_hand[0].getValue() == 10 && _hand[1].getValue() == 11 && _hand[2].getValue() == 12 && _hand[3].getValue() == 13 && _hand[4].getValue() == 14){
+                    royal_flush = true;
+                  }
+                }
+              }
+            }
+
+            else if(_temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
+              int ace_count = 0; //ensures that if there are two or more Ace Card objects, take one and leave for loop
+              for(int j = 0; j < _temp_hand.size(); j++){
+                if(ace_count == 0){
+                  if(_temp_hand[j].getValue()== 14){ // switch Ace value from 14 to 1
+                    _temp_hand[j].switch_ace();
+                    Card temp = _temp_hand[j];
+                    straight_hand.push_back(temp);
+                    ace_count ++; // this ensures that once an Ace has been appended into _hand, take no more and fill it with the rest of the sequence
+                    straight = true;
+                    position = i;
+
+                    //After appending Ace, now append the remaining 4 of the Straight sequence
+                    for(position; position < i+4; position ++){
+                      Card temp = _temp_hand[position];
+                      straight_hand.push_back(temp);
+                      std::sort(straight_hand.begin(),straight_hand.end());
+                    }
+                    if(flush){ // if there is also a Flush, check through Straight to see if both containers match up
+                      for(int z = 0; z < straight_hand.size(); z++){
+                        if(straight_hand[z].getValue() == flush_hand[z].getValue() && straight_hand[z].getSuit() == flush_hand[z].getSuit()){
+                          count ++;
+                        }
+                      }
+
+                      if(count == 5){ // if all 5 Card objects in each container are equivalent
+                        straight_flush = true;
+                        for (int j = 0; j < straight_hand.size(); j++){
+                          Card temp = straight_hand[j];
+                          _hand.push_back(temp);
+                        }
+                        if(_hand[0].getValue() == 10 && _hand[1].getValue() == 11 && _hand[2].getValue() == 12 && _hand[3].getValue() == 13 && _hand[4].getValue() == 14){
+                          royal_flush = true;
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -634,33 +687,93 @@ void Hand::straight_flush_check(){
         }
       }
     }
+  }
 
-    // for the reason suit_counter counts only to 4 (instead of 5), please refer to the top if statement
-    if(suit_counter == 4){
-      straight_flush = true;
-      if(_hand.size() == 0){
-        for (int p = position; p <position+5; p++){ // pushes the straight flush to the back of the container
-          Card temp = _temp_hand[p];
-          _hand.push_back(temp);
-        }
-      }
-      else if(_hand.size() == 1 && _hand[0].getValue() == 1){ // there is already an Ace(that has been switched) in there
-        for (int q = position; q <position+4; q++){ // pushes the straight flush to the back of the container
-          Card temp = _temp_hand[q];
-          _hand.push_back(temp);
-        }
-      }
-      // hand.erase(hand.begin(),hand.end()-5); // erase the rest of the container, leaving only the straigth flush in the back
-      // std::sort(hand.begin(),hand.end());
-
+  count = 0; //reinitialise as 0 to be used in determining whether the hand is also straight flush
+  if(straight_flush){
+    if(_hand[0].getValue() == 10 && _hand[1].getValue() == 11 && _hand[2].getValue() == 12 && _hand[3].getValue() == 13 && _hand[4].getValue() == 14){
+      royal_flush = true;
     }
-
   }
 
-  // for the reason suit_counter counts only to 4 (instead of 5), please refer to the top if statement
-  if(suit_counter != 4){ // not a flush
-    straight_flush = false;
+  else if(straight && !flush){ //if solely a Straight, append Card objects from straight_hand to _hand
+    for(int q = 0; q < straight_hand.size(); q++){
+      Card temp = straight_hand[q];
+      _hand.push_back(temp);
+    }
   }
+
+  else if(flush && !straight){ // if solely a Flush, append Card objects from flush_hand to _hand
+    for(int r = 0; r < flush_hand.size(); r++){
+      Card temp = flush_hand[r];
+      _hand.push_back(temp);
+    }
+  }
+
+
+
+  // for(int i =0; i < 4; i++){ // check through every Suit
+  //   suit_counter = 0; // initialises it as 0 for every suit to prevent carrying over counters from previous suit
+  //   for (int j = 0; j < _temp_hand.size()-1; j++){ // -1 to ensure that j+1 is still within container size (prevent segmentation fault)
+  //
+  //     if (_temp_hand[j].getSuit() == suit_set[i] && _temp_hand[j+1].getSuit() == _temp_hand[j].getSuit() && _temp_hand[j+1].getValue() == _temp_hand[j].getValue()+1){
+  //       suit_counter += 1;
+  //
+  //       // this if statement helps to determine the starting position of the straight flush
+  //       // note suit_counter is equals to 3 (rather than 5) because the if statement above has imposed that if the first 4 elements satisfy the condition AND the 5th element is the same as the 4th, the loop would end at the 4th element, so suit_counter will only count 4
+  //       if(suit_counter == 4){ // provided that suit_counter found 5 consecutive Card objects, let the starting position be the current position subtracted by 4
+  //          // position is current minus 3 because j starts from 0 and the nth iteration it is on the (n-1)'th position
+  //         position = j-3;
+  //       }
+  //     }
+  //
+  //     else if(suit_counter == 3){// if there are 4 Card objects of consecutive face value and suit
+  //       // by the time it passes the above if loop, j would by the 4th iteration as it has successfully incremented suit_counter 3 times before that corresponds to the 4 consecutive Card objects
+  //       if (_temp_hand[j+1].getSuit() != _temp_hand[j].getSuit() || _temp_hand[j+1].getValue() != _temp_hand[j].getValue()+1){
+  //         if(_temp_hand[j-3].getValue() == 2){ // if the first Card in a potential Straight Flush is 2, then find an Ace with the same suit as the last hope
+  //           if(count == 0){ // ensures only one Ace gets appended into _hand
+  //             for(int k = 0; k < _temp_hand.size(); k++){
+  //               if(_temp_hand[k].getValue() == 14 && _temp_hand[k].getSuit() == suit_set[i]){ // there is an Ace with the same suit
+  //                  _temp_hand[k].switch_ace(); //
+  //                  Card temp = _temp_hand[k];
+  //                  _hand.push_back(temp);
+  //                  position = j-2;
+  //                  count++;
+  //                  suit_counter++;
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //
+  //   // for the reason suit_counter counts only to 4 (instead of 5), please refer to the top if statement
+  //   if(suit_counter == 4){
+  //     straight_flush = true;
+  //     if(_hand.size() == 0){
+  //       for (int p = position; p <position+5; p++){ // pushes the straight flush to the back of the container
+  //         Card temp = _temp_hand[p];
+  //         _hand.push_back(temp);
+  //       }
+  //     }
+  //     else if(_hand.size() == 1 && _hand[0].getValue() == 1){ // there is already an Ace(that has been switched) in there
+  //       for (int q = position; q <position+4; q++){ // pushes the straight flush to the back of the container
+  //         Card temp = _temp_hand[q];
+  //         _hand.push_back(temp);
+  //       }
+  //     }
+  //     // hand.erase(hand.begin(),hand.end()-5); // erase the rest of the container, leaving only the straigth flush in the back
+  //     // std::sort(hand.begin(),hand.end());
+  //
+  //   }
+  //
+  // }
+  //
+  // // for the reason suit_counter counts only to 4 (instead of 5), please refer to the top if statement
+  // if(suit_counter != 4){ // not a flush
+  //   straight_flush = false;
+  // }
 
 }
 
@@ -740,10 +853,6 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
 
       else if(i>0 && _temp_hand[i-1].getValue() != _temp_hand[i].getValue()){ // extra condition to ensure that this is only a Pair IFF it is not equal to the value before it
 
-        //push back for later:
-        // pushes back the two cards that makes 1-Pair
-        // _pair.push_back(hand[i]);
-        // _pair.push_back(hand[i+1]);
         pair +=1;
         position = i;
         for(position; position < i+2; position++){
@@ -789,36 +898,10 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
             straight = true;// it's a straight
             position = i;
 
-            // if(_temp_hand[i].getValue() == 2){ // if the start of the Straight is a 2, see if there is an Ace in the _temp_hand as well
-            //   int count = 0; //ensures that if there are two Ace Card objects, take one and leave for loop
-            //   for(int j = 0; j < _temp_hand.size(); j++){
-            //     if(count == 0){
-            //       if(_temp_hand[j].getValue()== 14){ // switch Ace value from 14 to 1
-            //         _temp_hand[j].switch_ace();
-            //         Card temp = _temp_hand[j];
-            //         _hand.push_back(temp);
-            //         count ++; // this ensures that once an Ace has been appended into _hand, take no more and fill it with the rest of the sequence
-            //       }
-            //     }
-            //
-            //   }
-            //   for(position; position < i+4; position ++){
-            //     Card temp = _temp_hand[position];
-            //     _hand.push_back(temp);
-            //   }
-            // }
-            //
-            // else{ // if the start of the Straight is NOT of value 2, append as normal
-            //   for (position; position < i+5; position ++){
-            //     Card temp = _temp_hand[position];
-            //     _hand.push_back(temp);
-            //   }
-            // }
             for (position; position < i+5; position ++){ // append the straight Card objects to _hand
                 Card temp = _temp_hand[position];
                 _hand.push_back(temp);
               }
-
           }
 
           else if(_temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
@@ -839,8 +922,7 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
               for(position; position < i+4; position ++){
                 Card temp = _temp_hand[position];
                 _hand.push_back(temp);
-            }
-
+              }
             }
           }
         }
@@ -909,13 +991,6 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
   }
 
   else if(straight){
-
-    //if the sequence is longer than 5, the program will pick every possible 5-Card sequence and append it to _hand
-    // remove the first n elements as they will be of the lowest values
-    if(_hand.size() > 5){
-      int cut_off = _hand.size() - 5;
-      _hand.erase(_hand.begin(),_hand.begin()+cut_off);
-    }
     score = 5;
   }
 
@@ -1003,17 +1078,8 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
 
       }
 
-      //now, _temp_hand is a container full of possible kicker Card object
-      // int p = 0;
-      // std::sort(_temp_hand.begin(), _temp_hand.end());
       Card kicker = *_temp_hand.rbegin(); // let kicker be the last Card object (also the one with the highest value) from the _temp_hand
 
-      // for(int k = p+1; k < _temp_hand.size(); k++){
-      //   if(kicker.getValue() < _temp_hand[k].getValue()){
-      //     kicker = _temp_hand[k]; // switch potential kicker Card object to the new card
-      //
-      //   }
-      // }
       _hand.push_back(kicker);
     }
     score = 3;

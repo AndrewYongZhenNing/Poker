@@ -137,7 +137,7 @@ void Game::start(){
 
   std::cout << "Community cards at flop:\n " << std::endl;
 
-  // show_board();
+  show_board();
 
   std::cout << "" << std::endl;
 
@@ -149,7 +149,7 @@ void Game::start(){
 
   std::cout << "\nCommunity cards at turn: " << std::endl;
 
-  // show_board();
+  show_board();
 
   std::cout << "" << std::endl;
 
@@ -161,7 +161,7 @@ void Game::start(){
 
   std::cout << "\nCommunity cards at river: " << std::endl;
 
-  // show_board();
+  show_board();
 
   std::cout << "" << std::endl;
 
@@ -613,7 +613,7 @@ void Game::declare_winner(){
               winner = _active_players[i];
               std::cout << winner.show_name() << std::endl;
             }
-            else if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+            else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // check first Pair
               draw = true;
             }
           }
@@ -631,7 +631,7 @@ void Game::declare_winner(){
               winner = _active_players[i];
               std::cout << winner.show_name() << std::endl;
             }
-            else if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+            else if(winner_hand[4].getValue() == contender_hand[4].getValue()){ // check first Pair
               draw = true;
             }
           }
@@ -688,7 +688,7 @@ void Game::simulation(){
 
   //Selected starting hand for testing
   Card c1 = Card('H',14); // Ace of Hearts
-  Card c2 = Card('H',13); // King of Hearts
+  Card c2 = Card('C',14); // King of Hearts
   int win = 0;
   int total = 0;
 
@@ -955,7 +955,7 @@ void Game::s_declare_winner(int &win){
               winner = _active_players[i];
               std::cout << winner.show_name() << std::endl;
             }
-            else if(winner_hand[4].getValue() < contender_hand[4].getValue()){ // check first Pair
+            else if(winner_hand[4].getValue()== contender_hand[4].getValue()){ // check first Pair
               draw = true;
             }
           }
