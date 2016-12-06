@@ -7,82 +7,109 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   std::cout << "Welcome!" << std::endl;
 
-  std::cout << "\n Would you like to play a game of Poker (p) or would you like to review a statistical analysis of the game(s)? (p/s)";
-  std::cin >> _response;
+  while(!question){
+    std::cout << "\nWould you like to play a game of Poker (p) or would you like to review a statistical analysis of the game(s)? (p/s)";
+    std::cin >> _response;
 
-  if (_response == 'p'){
+    if (_response == 'p'){
 
-    std::cout << "\nWould you like to include AI?(y/n)";
-    std::cin >>_response;
+      while(!question){
 
-    std::cout << "Please enter the number of players:";
-    std::cin >> _number_of_players;
+        std::cout << "\nWould you like to include AI?(y/n)\n";
+        std::cin >>_response;
 
-    // HOW DO I GET IT TO EXIT LOOP?
-    // try{
-    //   if (_number_of_players < 3){
-    //     throw 1;
-    //   }
-    // }
-    //
-    // catch(int exception){
-    //   std::cerr << "Insufficient players. Please ensure at least 3 players participate in the game." << std::endl;
-    //
-    // }
 
-    for(int i = 1; i <= _number_of_players; i++){ // create new players
+        if(_response == 'y'){ // include two AI
+          AI p1 = AI("Archimedes");
+          AI p2 = AI("Leibniz");
+          _players.push_back(p1);
+          _players.push_back(p2);
+          question = true;
+        }
 
-      std::cout << "Player " << i << ":" << std::endl;
-      Player p = Player();
-      _players.push_back(p);
+        else if(_response == 'n'){
+          question = true;
+        }
+
+        else{
+          std::cerr << "Invalid command. Please enter either y or n." << std::endl;
+
+        }
+      }
+
+      //reinitialise question as false to be used in the next while loop
+      question = false;
+
+      while(!question){
+        std::cout << "\nPlease enter the number of players:";
+        std::cin >> _number_of_players;
+
+        if(_number_of_players <2){
+          std::cerr << "\nInvalid number of players, please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
+        }
+
+        else if(_number_of_players >1 && _number_of_players < 11){
+          question = true;
+        }
+
+        else if(_number_of_players>10){
+          std::cerr << "\nThe number of players exceed the maximum (10). Please enter a number less than or equal to 10." << std::endl;
+        }
+
+        else{
+          std::cerr << "Invalid command. Please enter an integer number." << std::endl;
+        }
+      }
+
+      for(int i = 1; i <= _number_of_players; i++){ // create new players
+
+        std::cout << "Player " << i << ":" << std::endl;
+        Player p = Player();
+        _players.push_back(p);
+
+      }
+
+      std::random_shuffle(_players.begin(),_players.end());// shuffles the order of the Player objects such that game does not always start with Player 1 as the dealer
+
+      // Add Player objects on to a container of active Player objects now
+      for (int i = 0;i < _players.size(); i++){
+        _active_players.push_back(_players[i]);
+      }
+
+
+      std::cout << "\nBegin game.\n" << std::endl;
+
+      start(); //starts the actual dynamic of the game
+
+      // Uncomment below to start a full game
+      while(_active_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
+
+        _players.push_back(_players[0]);
+        _players.erase(_players.begin());
+        _active_players.push_back(_active_players[0]);
+        _active_players.erase(_active_players.begin()); // erase the Player object that was was the front to avoid duplication
+        start();
+
+      }
+
+      if(_players.size() == 1){ // one Player object remaining in the waiting
+        std::cout << "Congratulations!\nThe overall winner of this game is Player " << _active_players[0].show_name() << "!" << std::endl;
+      }
+      question = true;
+    }
+
+    else if(_response == 's'){
+      simulation();
+      question = true;
 
     }
 
-    if(_response == 'y'){ // include two AI
-      AI p1 = AI("Archimedes");
-      AI p2 = AI("Leibniz");
-      _players.push_back(p1);
-      _players.push_back(p2);
+    else{
+      std::cerr << "Invalid command. Please enter either s for simulation or p for play." << std::endl;
 
     }
-
-    else if(_response == 'n'){ // redundant loop
-      // do nothing
-    }
-
-    std::random_shuffle(_players.begin(),_players.end());// shuffles the order of the Player objects such that game does not always start with Player 1 as the dealer
-
-    // Add Player objects on to a container of active Player objects now
-    for (int i = 0;i < _players.size(); i++){
-      _active_players.push_back(_players[i]);
-    }
-
-
-    std::cout << "\nBegin game.\n" << std::endl;
-
-    start(); //starts the actual dynamic of the game
-
-    // Uncomment below to start a full game
-    while(_active_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
-
-      _players.push_back(_players[0]);
-      _players.erase(_players.begin());
-      _active_players.push_back(_active_players[0]);
-      _active_players.erase(_active_players.begin()); // erase the Player object that was was the front to avoid duplication
-      start();
-
-    }
-
-    if(_players.size() == 1){ // one Player object remaining in the waiting
-      std::cout << "Congratulations!\nThe overall winner of this game is Player " << _active_players[0].show_name() << "!" << std::endl;
-    }
-
   }
 
-  else if(_response == 's'){
-    simulation();
-
-  }
 }
 
 Game::~Game(){};

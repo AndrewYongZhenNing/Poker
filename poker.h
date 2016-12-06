@@ -54,6 +54,7 @@ protected:
   char _response = 'n'; // for playing game/statistical analysis, including/excluding AI etc etc
   char _face = 'f';
   char _value = 'v';
+  bool question = false;
 
 
 

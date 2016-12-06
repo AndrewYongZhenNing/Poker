@@ -23,8 +23,7 @@ public:
   Hand(Player &player, std::vector<Card> board, char command); // constructor takes a Player object and a vector (from Game)
   ~Hand();
   int evaluate(); // [to be used in method evaluate, from Hand class] evaluates the points of each player's hand, returns an integer (the score)
-  bool flush_check();
-  void straight_flush_check();
+  void straight_flush_check(); // checks for Royal Flush, Straight Flush, Straight and Flush
   void ace_check();
   int s_evaluate();
 
