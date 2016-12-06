@@ -114,18 +114,6 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
 Game::~Game(){};
 
-// void Game::debug(){
-//
-//   int rank = 0;
-//
-//   std::cout << "Select rank to evaluate: ";
-//   std::cin >> rank;
-//
-//   while(start() != rank){
-//     start();
-//   }
-// }
-
 void Game::start(){
 
   Deck game_deck = Deck(); //initialises a Deck (object) of cards for gameplay
@@ -427,14 +415,6 @@ void Game::show_board(){ // display the board - essential for the game
   }
 
 }
-
-
-// not sure if get_board() is useful, commented out for now
-// std::vector<Card> Game::get_board(){ // returns the vector container that has the community cards in it
-//
-//   return _board;
-//
-// }
 
 void Game::declare_winner(){
 
