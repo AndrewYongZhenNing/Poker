@@ -6,7 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
-// #include <string>
+#include <string>
 
 //Relevant class header files
 #include "card.h"
