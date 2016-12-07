@@ -723,44 +723,45 @@ void Game::simulation(){
 
   // User selection
   std::cout << "Please select a starting hand of your choice:\nUse the abbreviation H,S,C,D for the suit and 2,3,4,5,6,7,8,9,10,J,Q,K,A for the face value." << std::endl;
-  Player dummy = Player("Archimedes");
+  // Player dummy = Player("Archimedes");
   int val = 0;
+  std::vector<Card> temp_pocket;
 
   for(int i = 0; i<2; i++){
     val = 0;
-
-    std::cout << "Card #" << i+1 << ":" << std::endl;
-    std::cout << "Suit:";
-    std::cin>> _face;
-    std::cout << "Face Value:";
-    std::cin >> _value;
-
     question = false;
-    while(!question){
-      if (_face == 'h'){
-        _face = 'H';
+    while (!question){
+      std::cout << "Card #" << i+1 << ":" << std::endl;
+      std::cout << "Suit:";
+      std::cin>> _face;
+
+      if (_face == 'h' || _face == 'H'){
         question = true;
       }
-      else if(_face == 'd'){
-        _face = 'D';
+
+      else if(_face == 'd' || _face == 'D'){
         question = true;
       }
-      else if(_face == 'c'){
-        _face = 'C';
+      else if(_face == 'c' || _face == 'C'){
         question = true;
       }
-      else if(_face == 's'){
-        _face = 'S';
+      else if(_face == 's' || _face == 'S'){
         question = true;
       }
+
       else{
-        std::cerr << "Invalid suit. Please enter using the abbreviation provided: H,S,D,C." << std::endl;
+        std::cerr << _face << " is an invalid suit. Please enter using the abbreviation provided: H,S,D,C." << std::endl;
         question = false;
       }
     }
 
     question = false;
     while(!question){
+      std::cout << "Face Value:";
+      std::cin >> _value;
+
+      question = false;
+
       if (_value == "2"){
         val = 2;
         question = true;
@@ -822,24 +823,34 @@ void Game::simulation(){
 
     //Create Card object to append into dummy's pocket cards.
     Card c = Card(_face,val);
-    dummy.deal(c);
+    temp_pocket.push_back(c);
   }
 
   std::cout << "Set number of simulations: ";
   std::cin >> _limit;
 
   //Selected starting hand for testing
-
-  std::vector<Card> temp_pocket = dummy.get_pocket();
   Card c1 = temp_pocket[0];
   Card c2 = temp_pocket[1];
 
+  simulation_start(c1,c2,'s',_limit); // command == 's' implies this is strictly a simulation study
+
+}
+
+float Game::simulation_start(Card c1, Card c2, char command, int limit){// set default limit as 1000
   int win = 0;
   int total = 0;
 
-  while(total < _limit){
+  AI dummy = AI("Hamilton");
+  dummy.deal(c1);
+  dummy.deal(c2);
 
-    std::cout << "Round: " << total + 1 << std::endl;
+  while(total < limit){
+
+    if(command = 's'){ //'s' for simulation run
+      std::cout << "Round: " << total + 1 << std::endl;
+    }
+
 
     Deck simulation_deck = Deck();
 
@@ -849,7 +860,7 @@ void Game::simulation(){
     // Now randomise the deck
     simulation_deck.shuffle();
 
-    Player foe = Player("Leibniz");
+    AI foe = AI("Lagrange");
     _active_players.push_back(foe);
     deal_pocket(simulation_deck); // allow the foe to be given random cards before push_back of test
     _active_players.push_back(dummy);
@@ -863,7 +874,7 @@ void Game::simulation(){
 
     }
 
-    s_declare_winner(win);
+    s_declare_winner(win,command);
 
     total ++;
 
@@ -872,27 +883,18 @@ void Game::simulation(){
     _active_players.clear();
 
   }
-
   //Winning percentage
   float win_percentage = (win*1./total )*100;
-  std::cout << "Win: " << win_percentage << "%" << std::endl;
 
-
-  // declare_winner(); // declares the winner and ends the game
-  // std::cout << "\n" << std::endl;
-  std::cout << "Simulation ended. \nContinue?(y/n)";
-  std::cin >> _response;
-
-  if(_response == 'y'){
-    simulation();
+  if(command = 's'){
+    std::cout << "Win: " << win_percentage << "%" << std::endl;
   }
-  else if(_response == 'n'){
-    std::cout << "Thank you for using this program. Please enjoy the game." << std::endl;
-  }
+
+  return win_percentage;
 
 }
 
-void Game::s_declare_winner(int &win){
+void Game::s_declare_winner(int &win, char command){
 
   int j = 0;
   bool draw = false;
@@ -1123,7 +1125,10 @@ void Game::s_declare_winner(int &win){
   }
 
   if (!draw){
-    std::cout << "The winner is: " << winner.show_name() << std::endl;
+    if(command == 's'){
+      std::cout << "The winner is: " << winner.show_name() << std::endl;
+    }
+
     if(winner.show_name() == _active_players[1].show_name()){
       win++;
     }

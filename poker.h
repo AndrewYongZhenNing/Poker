@@ -37,8 +37,8 @@ public:
   void declare_winner(); // determines the winner from the scores given to the Player objects
 
   void simulation();
-  // float simulation(std::vector<Card> pocket_cards); // to be used by AI to determine odds of winning
-  void s_declare_winner(int &win); // determines the winning percentage in a simulation
+  float simulation_start(Card c1, Card c2, char command, int limit); // to be used for statistical analysis, but also by AI to determine odds of winning
+  void s_declare_winner(int &win, char command); // determines the winning percentage in a simulation
 
 protected:
   int _number_of_players;
