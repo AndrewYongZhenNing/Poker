@@ -127,8 +127,25 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
     else if(_response == 's'){
       simulation();
-      question = true;
+      question = false;
+      while(!question){
+        std::cout << "Run simulation again?(y/n)";
+        std::cin>> _response;
+        if(_response == 'y'){
+          simulation();
+          question = true;
+        }
 
+        else if(_response == 'n'){
+          std::cout << "Thank you for using the simulation. Please enjoy the game." << std::endl;
+          question = true;
+        }
+
+        else{
+          std::cerr << "Invalid response. Please enter either y or n." << std::endl;
+        }
+
+      }
     }
 
     else{
@@ -838,17 +855,18 @@ void Game::simulation(){
 }
 
 float Game::simulation_start(Card c1, Card c2, char command, int limit){// set default limit as 1000
-  int win = 0;
-  int total = 0;
+  float win_percentage = 0;
 
   AI dummy = AI("Hamilton");
   dummy.deal(c1);
   dummy.deal(c2);
 
-  while(total < limit){
+  _total = 0;
+
+  while(_total < limit){
 
     if(command = 's'){ //'s' for simulation run
-      std::cout << "Round: " << total + 1 << std::endl;
+      std::cout << "Round: " << _total + 1 << std::endl;
     }
 
 
@@ -874,9 +892,9 @@ float Game::simulation_start(Card c1, Card c2, char command, int limit){// set d
 
     }
 
-    s_declare_winner(win,command);
+    s_declare_winner(_win,command);
 
-    total ++;
+    _total ++;
 
     foe.empty_pocket();
     _board.clear();
@@ -884,7 +902,7 @@ float Game::simulation_start(Card c1, Card c2, char command, int limit){// set d
 
   }
   //Winning percentage
-  float win_percentage = (win*1./total )*100;
+  win_percentage = (_win*1./_total )*100;
 
   if(command = 's'){
     std::cout << "Win: " << win_percentage << "%" << std::endl;
@@ -1133,7 +1151,6 @@ void Game::s_declare_winner(int &win, char command){
       win++;
     }
 
-    //winner.collect_pot(_pot); // increases the winner's bankroll by the amount of bet on the particular round
 
   }
 

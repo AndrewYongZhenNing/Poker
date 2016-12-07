@@ -52,15 +52,13 @@ protected:
   std::vector<Card> _board; // this is where the community Card objects are placed
   std::vector<Card>::iterator _board_iter; // for checking if _board has at least 3 cards after flop
   bool _include_AI = false;
-  char _response = 'n'; // for playing game/statistical analysis, including/excluding AI etc etc
-  char _face = 'f';
-  std::string _value = "v";
+  char _response; // for playing game/statistical analysis, including/excluding AI etc etc
+  char _face;
+  std::string _value;
   int _limit = 0; // variable to hold the number of simulations to perform
   bool question = false; // generalised boolean used with while loops at points where user input is necessary such that wrong inputs do not cause problems
-
   int _total = 0;
-
-
+  int _win = 0;
 
 
 };
