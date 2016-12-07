@@ -37,27 +37,50 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
         }
       }
 
+      std::cout << "_players with AI in:" << _players.size() << std::endl;
+
       //reinitialise question as false to be used in the next while loop
       question = false;
 
       while(!question){
-        std::cout << "\nPlease enter the number of players:";
+        std::cout << "\nPlease enter the number of human players:";
         std::cin >> _number_of_players;
 
-        if(_number_of_players <2){
-          std::cerr << "\nInvalid number of players, please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
-        }
+        if(_players.size() == 2){ // AI already included
+          if(_number_of_players <0){
+              std::cerr << "\nInvalid number. Please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
+            }
 
-        else if(_number_of_players >1 && _number_of_players < 11){
-          question = true;
-        }
+          else if(_number_of_players >7){
+            std::cerr << "\nThe numver of players, including AI, exceed the maximum (10). Please enter a umber less than or equal to 7." << std::endl;
+          }
 
-        else if(_number_of_players>10){
-          std::cerr << "\nThe number of players exceed the maximum (10). Please enter a number less than or equal to 10." << std::endl;
-        }
+          else{
+            question = true;
+          }
 
-        else{
-          std::cerr << "Invalid command. Please enter an integer number." << std::endl;
+        }
+        else if(_players.size() == 0){ // no AI present
+          if(_number_of_players <2){
+            if (_players.size() == 0){ // there are no AI in the game waiting
+      				std::cerr << "\nInvalid number of players, please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
+      			}
+      			else if (_players.size() != 0){
+      				question = true;
+      			}
+          }
+
+          else if(_number_of_players >1 && _number_of_players < 11){
+            question = true;
+          }
+
+          else if(_number_of_players>10){
+            std::cerr << "\nThe number of players exceed the maximum (10). Please enter a number less than or equal to 10." << std::endl;
+          }
+
+          else{
+            std::cerr << "Invalid command. Please enter an integer number." << std::endl;
+          }
         }
       }
 
@@ -76,14 +99,15 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
         _active_players.push_back(_players[i]);
       }
 
-
       std::cout << "\nBegin game.\n" << std::endl;
 
       start(); //starts the actual dynamic of the game
 
       // Uncomment below to start a full game
-      while(_active_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
-
+      while(_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
+        _total++; // keeps track of how many rounds have passed: for fun
+        std::cout << "_active_players size:" << _active_players.size() << std::endl;
+        std::cout << "_players size:" << _players.size() << std::endl;
         _players.push_back(_players[0]);
         _players.erase(_players.begin());
         _active_players.push_back(_active_players[0]);
@@ -92,8 +116,11 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
       }
 
+      std::cout << "Game ended" << std::endl;
+
       if(_players.size() == 1){ // one Player object remaining in the waiting
         std::cout << "Congratulations!\nThe overall winner of this game is Player " << _active_players[0].show_name() << "!" << std::endl;
+        std::cout << "Total rounds played: " << _total << std::endl;
       }
       question = true;
     }
@@ -120,6 +147,7 @@ void Game::start(){
   std::cout << "Shuffling deck...\n" << std::endl;
   // std::cout <<"deck size: \n" game_deck.size() << std::endl; //check it is a new deck every new game
   game_deck.shuffle();
+  std::cout << "Deck shuffled" << std::endl;
 
   // last three Player objects of the game are Dealer, Small and Big Blind respectively
   std::cout << " \nSmall Blind: " << _active_players.rbegin()[1].show_name() << " \nBig Blind: " << _active_players.rbegin()[0].show_name() << std::endl;
@@ -137,9 +165,7 @@ void Game::start(){
 
   call_amount += _big_blind;
 
-  // bet(call_amount,_big_blind); // pre-flop betting happens in a for loop in here
-
-  // bet_next_round(call_amount,_big_blind); // in order to move to next round, all Player objects must have same amount in their pot
+  bet(call_amount,_big_blind); // pre-flop betting happens in a for loop in here
 
   std::cout << "Players remaining: " << std::endl;
 
@@ -156,9 +182,7 @@ void Game::start(){
 
   std::cout << "" << std::endl;
 
-  //bet(call_amount,_big_blind); // flop betting happens in a for loop in here
-
-  // bet_next_round(call_amount,_big_blind);
+  // bet(call_amount,_big_blind); // flop betting happens in a for loop in here
 
   deal_turn(game_deck);
 
@@ -168,9 +192,7 @@ void Game::start(){
 
   std::cout << "" << std::endl;
 
-  //bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
-
-  // bet_next_round(call_amount, 2*_big_blind);
+  // bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
   deal_river(game_deck);
 
@@ -180,7 +202,7 @@ void Game::start(){
 
   std::cout << "" << std::endl;
 
-  //bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
+  // bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
   std::cout << "\n" << std::endl;
 
@@ -194,8 +216,9 @@ void Game::start(){
   declare_winner(); // declares the winner and ends the game
   std::cout << "\n" << std::endl;
 
-  // for(int i )
   _board.clear();
+
+  std::cout << "Size of _player: " << _players.size() << std::endl;
 
   for(int i =0; i < _players.size(); i++){
     if(_players[i].get_bankroll() <= _big_blind){
@@ -213,13 +236,17 @@ void Game::start(){
         std::cin >> _response;
         if(_response == 'y'){ // remove Player object from
           _players.erase(_players.begin()+i);
-          _active_players.erase(_active_players.begin()+i);
+          // _active_players.erase(_active_players.begin()+i);
+
           i--;
 
         }
       }
     }
   }
+
+  // std::cout << "Continue? y/n";
+  // std::cin >> _response;
 
 
 }
@@ -251,7 +278,8 @@ void Game::bet(int &amount, int raise_unit){
         //at the moment, not concerned with AI behavious, just let them call()
         if(_active_players[i].get_bankroll() > amount){
           _active_players[i].call(amount);
-          // _active_players[i].show_bankroll();
+          std::cout<< "In Game::bet, player: " << _active_players[i].show_name() << "; and his bankroll is:" << std::endl;
+          _active_players[i].show_bankroll();
           _call_counter ++;
         }
         else if(_active_players[i].get_bankroll() < amount){
@@ -259,6 +287,7 @@ void Game::bet(int &amount, int raise_unit){
           _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
           _community_pot += _active_players[i].get_bankroll(); // takes whatever that is left in the Player object's _bankroll
           _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects
+          _players.erase(_players.begin()+i); // remove current Player object from the container of waiting Player objects since it no longer has enough funds to play
           i--; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
         }
 
@@ -276,7 +305,7 @@ void Game::bet(int &amount, int raise_unit){
 
         //call
         if(response == 'c'){// call: match with the current raised value
-          if(_active_players[i].get_bankroll() > amount){
+          if(_active_players[i].get_bankroll() >= amount){
             _active_players[i].call(amount);
             _active_players[i].show_bankroll();
             _call_counter ++;
@@ -298,10 +327,7 @@ void Game::bet(int &amount, int raise_unit){
 
           amount+= raise_unit; // raise by one unit of big blind
           _active_players[i].raise_(amount);
-          // _active_players[i].call(amount); // first even with the current highest
-          // _active_players[i].bet(raise_unit); // then add one unit of big blind
           _active_players[i].show_bankroll();
-          // amount+= raise_unit; // raise by one unit of big blind
           _call_counter = 0;
         }
 
@@ -375,7 +401,6 @@ void Game::deal_pocket(Deck &deck){ // deal pocket cards to each player
   }
 
 }
-
 
 void Game::deal_flop(Deck &deck){ // deals first 3 community cards
 
@@ -485,14 +510,13 @@ void Game::declare_winner(){
         //evaluate 1-Pair draw
         else if(winner.get_score() == 2){ //1-Pair draw
           //check if pair value is the same
-          std::cout << "Checkpoint PAIR" << std::endl;
+
           if(winner_hand[0].getValue() < contender_hand[0].getValue()){
             winner = _active_players[i];
             std::cout << winner.show_name() << std::endl;
           }
 
           else if(winner_hand[0].getValue() == contender_hand[0].getValue()){ // if Pair values are the same
-            std::cout << "Checkpoint PAIR 1" << std::endl;
             //jump straight to first kicker
             if (winner_hand[4].getValue() < contender_hand[4].getValue()){
               winner = _active_players[i];
@@ -647,8 +671,10 @@ void Game::declare_winner(){
       }
 
       else{ // the candidate winner has the lower score, transfer the information of the candidate winner to the winner object
+        // _active_players[i].claim_pot(_community_pot); // actual winner Player object claims the pot, not the object called winner
+        // std::cout << _active_players[i].show_name();
+        // _active_players[i].show_bankroll();
         winner = _active_players[i]; // let the winner be the i'th Player object which has the presently highest score
-        _active_players[i].claim_pot(_community_pot); // actual winner Player object claims the pot, not the object called winner
         draw = false; // put this line here just in case previous there were cases where other Plyers objects have the same score
       }
 
@@ -657,7 +683,14 @@ void Game::declare_winner(){
   }
 
   if (!draw){
-    std::cout << "Congratulations!\nThe winner is: " << winner.show_name() << std::endl;
+    std::cout << "Congratulations!\nThe winner of round " << _total << " is: " << winner.show_name() << "\n" << std::endl;
+    for (int i = 0; i < _active_players.size(); i++){
+      if(_active_players[i].show_name() == winner.show_name()){
+        _active_players[i].claim_pot(_community_pot);
+      }
+    }
+
+    // winner.show_bankroll();
     //winner.collect_pot(_pot); // increases the winner's bankroll by the amount of bet on the particular round
 
   }
@@ -676,6 +709,12 @@ void Game::declare_winner(){
     }
   }
 
+  for(int i = 0; i < _active_players.size(); i++){
+
+    std::cout << "Player " << _active_players[i].show_name()<< "- ";
+    _active_players[i].show_bankroll();
+    std::cout << "" << std::endl;
+  }
 }
 
 void Game::simulation(){
@@ -683,23 +722,122 @@ void Game::simulation(){
   std::cout << "Begin simulation." << std::endl;
 
   // User selection
-  // std::cout << "Please select a starting hand of your choice:\nUse the abbreviation H,S,C,D for the suit and 2,3,4,5,6,7,8,9,10,J,Q,K,A for the face value." << std::endl;
-  // for(int i = 0; i<2; i++){
-  //   std::cout << "Card #" << i+1 << ":" << std::endl;
-  //   std::cout << "Suit:";
-  //   std::cin>> _face;
-  //   std::cout << "Face Value:";
-  //   std::cin >> _value;
-  // }
-  //
+  std::cout << "Please select a starting hand of your choice:\nUse the abbreviation H,S,C,D for the suit and 2,3,4,5,6,7,8,9,10,J,Q,K,A for the face value." << std::endl;
+  Player dummy = Player("Archimedes");
+  int val = 0;
+
+  for(int i = 0; i<2; i++){
+    val = 0;
+
+    std::cout << "Card #" << i+1 << ":" << std::endl;
+    std::cout << "Suit:";
+    std::cin>> _face;
+    std::cout << "Face Value:";
+    std::cin >> _value;
+
+    question = false;
+    while(!question){
+      if (_face == 'h'){
+        _face = 'H';
+        question = true;
+      }
+      else if(_face == 'd'){
+        _face = 'D';
+        question = true;
+      }
+      else if(_face == 'c'){
+        _face = 'C';
+        question = true;
+      }
+      else if(_face == 's'){
+        _face = 'S';
+        question = true;
+      }
+      else{
+        std::cerr << "Invalid suit. Please enter using the abbreviation provided: H,S,D,C." << std::endl;
+        question = false;
+      }
+    }
+
+    question = false;
+    while(!question){
+      if (_value == "2"){
+        val = 2;
+        question = true;
+      }
+      else if(_value == "3"){
+        val = 3;
+        question = true;
+      }
+      else if(_value == "4"){
+        val = 4;
+        question = true;
+      }
+      else if(_value == "5"){
+        val = 5;
+        question = true;
+      }
+      else if(_value == "6"){
+        val = 6;
+        question = true;
+      }
+      else if(_value == "7"){
+        val = 7;
+        question = true;
+      }
+      else if(_value == "8"){
+        val = 8;
+        question = true;
+      }
+      else if(_value == "9"){
+        val = 9;
+        question = true;
+      }
+      else if(_value == "10"){
+        val = 10;
+        question = true;
+      }
+      else if(_value == "J" || _value == "j"){ // case (in)sensitive
+        val = 11;
+        question = true;
+      }
+      else if(_value == "Q" || _value == "q"){// case (in)sensitive
+        val = 12;
+        question = true;
+      }
+      else if(_value == "K" || _value == "k"){// case (in)sensitive
+        val = 13;
+        question = true;
+      }
+      else if(_value == "A" || _value == "a"){// case (in)sensitive
+        val = 14;
+        question = true;
+      }
+
+      else{
+        std::cerr << "Invalid face value. Please enter a face value between 2 to Ace using the abbreviation below: \n2,3,4,5,6,7,8,9,10,J,Q,K,A" << std::endl;
+        question = false;
+      }
+    }
+
+    //Create Card object to append into dummy's pocket cards.
+    Card c = Card(_face,val);
+    dummy.deal(c);
+  }
+
+  std::cout << "Set number of simulations: ";
+  std::cin >> _limit;
 
   //Selected starting hand for testing
-  Card c1 = Card('H',14); // Ace of Hearts
-  Card c2 = Card('C',14); // King of Hearts
+
+  std::vector<Card> temp_pocket = dummy.get_pocket();
+  Card c1 = temp_pocket[0];
+  Card c2 = temp_pocket[1];
+
   int win = 0;
   int total = 0;
 
-  while(total < 1000){
+  while(total < _limit){
 
     std::cout << "Round: " << total + 1 << std::endl;
 
@@ -711,38 +849,28 @@ void Game::simulation(){
     // Now randomise the deck
     simulation_deck.shuffle();
 
-    // Create two Player objects
-    Player test = Player("Archimedes");
-    test.deal(c1); // give test the two starting hand
-    test.deal(c2);
-
     Player foe = Player("Leibniz");
     _active_players.push_back(foe);
     deal_pocket(simulation_deck); // allow the foe to be given random cards before push_back of test
-    _active_players.push_back(test);
+    _active_players.push_back(dummy);
 
     deal_flop(simulation_deck);
     deal_turn(simulation_deck);
     deal_river(simulation_deck);
 
     for (int i = 0; i < _active_players.size(); i++){
-      Hand(_active_players[i],_board, 's'); // takes in Player object's pocket cards and the community cards to go through evaluation
+      Hand(_active_players[i],_board); // takes in Player object's pocket cards and the community cards to go through evaluation
 
     }
 
     s_declare_winner(win);
 
-    // if(_active_players[1].get_score() > _active_players[0].get_score()){
-    //   // std::cout << test.show_name() << " score is: " << test.get_score() << std::endl;
-    //   win ++;
-    // }
-
     total ++;
 
-    test.empty_pocket();
     foe.empty_pocket();
     _board.clear();
     _active_players.clear();
+
   }
 
   //Winning percentage
@@ -752,11 +880,6 @@ void Game::simulation(){
 
   // declare_winner(); // declares the winner and ends the game
   // std::cout << "\n" << std::endl;
-
-
-
-
-
   std::cout << "Simulation ended. \nContinue?(y/n)";
   std::cin >> _response;
 
@@ -766,6 +889,7 @@ void Game::simulation(){
   else if(_response == 'n'){
     std::cout << "Thank you for using this program. Please enjoy the game." << std::endl;
   }
+
 }
 
 void Game::s_declare_winner(int &win){

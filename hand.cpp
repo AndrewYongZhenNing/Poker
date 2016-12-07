@@ -16,7 +16,6 @@ Hand::Hand(Player &player, std::vector<Card> board){ // evaluates the hands of e
 
     Card temp = *_temp_iter;
 
-
     temp.show_card();
 
     _temp_hand.push_back(*_temp_iter); //dereferencing _temp_iter will give one of the two cards in the Player's pockets where the pointer is pointing at
@@ -29,26 +28,6 @@ Hand::Hand(Player &player, std::vector<Card> board){ // evaluates the hands of e
     _temp_hand.push_back(*_temp_iter); // dereferencing _temp_iter will give one of the community cards in the board at game
 
   }
-
-  // std::cout << "\nThe hand for " << player.show_name() << " is: " << std::endl;
-  //
-  // // print the Hand to check
-  // for (_temp_iter = _temp_hand.begin();_temp_iter != _temp_hand.end(); _temp_iter++){ // testing purposes
-  //
-  //   Card temp = *_temp_iter;
-  //
-  //   temp.show_card();
-  //
-  // }
-
-
-  // for (_temp_iter = _hand.begin();_temp_iter != _hand.end(); _temp_iter++){ // testing purposes
-  //
-  //   Card temp = *_temp_iter;
-  //
-  //   temp.show_card();
-  //
-  // }
 
   std::cout << "" << std::endl;
 
@@ -124,7 +103,6 @@ Hand::Hand(Player &player, std::vector<Card> board, char command){ // Simulation
     // std::cout << "" << std::endl;
 
     //sorts and give the Hand object a score
-	std::cout << "In hand constructor, " << player.show_name() << ": hand is being evaluated: " << std::endl;
     player.assign_score(s_evaluate()); // assigns the score to the Player object this Hand is for
 
     // std::cout << "\nThe hand for " << player.show_name() << " is: " << std::endl;
@@ -138,7 +116,6 @@ Hand::Hand(Player &player, std::vector<Card> board, char command){ // Simulation
     // player.show_score(); //a method to check if the scores are evaluated properly
     player.get_score();
     player.get_hand(_hand); // passes the _hand container evaluated in Hand class to each Player object
-	std::cout <<"In hand constructor for AI: " << player.show_name() << ": the hand size is: " << _hand.size() << std::endl;
 
     // Below the hand and pocket containers are cleared for the new game;
     _temp_hand.clear();
@@ -535,7 +512,6 @@ void Hand::straight_flush_check(){
           flush_hand.push_back(temp);
         }
       }
-	  std::cout << "In straight flush check, checking for flusj: " << flush_hand.size() << std::endl;
       //ensures flush cards are in ascending order
       std::sort(flush_hand.begin(),flush_hand.end());
     }
@@ -567,11 +543,9 @@ void Hand::straight_flush_check(){
                 straight_hand.push_back(temp);
                 std::sort(straight_hand.begin(),straight_hand.end());
               }
-			  std::cout << "before here1: " << std::endl;
 
-              //If flush hand exist, compare with flush hand, if it is the same as flush, exit for loop
+              //Compare with flush hand, if it is the same as flush, exit for loop
               if(flush){
-				  std::cout << "Have I gone through here1?" << std::endl;
                 for(int z = 0; z < straight_hand.size(); z++){
                   if(straight_hand[z].getValue() == flush_hand[z].getValue() && straight_hand[z].getSuit() == flush_hand[z].getSuit()){
                     count ++;
@@ -583,12 +557,14 @@ void Hand::straight_flush_check(){
                     Card temp = straight_hand[j];
                     _hand.push_back(temp);
                   }
+                  if(_hand[0].getValue() == 10 && _hand[1].getValue() == 11 && _hand[2].getValue() == 12 && _hand[3].getValue() == 13 && _hand[4].getValue() == 14){
+                    royal_flush = true;
+                  }
                 }
-				std::cout << "In check1, have I mde it out?" << std::endl;
               }
             }
 
-			else if (i + 4 < _temp_hand.size() && _temp_hand[i + 4].getValue() != _temp_hand[i].getValue() + 4 && _temp_hand[i].getValue() == 2){ // one last hope: is there an Ace in the _temp_hand?
+            else if(_temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
               int ace_count = 0; //ensures that if there are two or more Ace Card objects, take one and leave for loop
               for(int j = 0; j < _temp_hand.size(); j++){
                 if(ace_count == 0){
@@ -606,9 +582,7 @@ void Hand::straight_flush_check(){
                       straight_hand.push_back(temp);
                       std::sort(straight_hand.begin(),straight_hand.end());
                     }
-					std::cout << "before here1: " << std::endl;
                     if(flush){ // if there is also a Flush, check through Straight to see if both containers match up
-						std::cout << "Have I gone through here2?" << std::endl;
                       for(int z = 0; z < straight_hand.size(); z++){
                         if(straight_hand[z].getValue() == flush_hand[z].getValue() && straight_hand[z].getSuit() == flush_hand[z].getSuit()){
                           count ++;
@@ -625,8 +599,6 @@ void Hand::straight_flush_check(){
                           royal_flush = true;
                         }
                       }
-
-					  std::cout << "In check2, have I mde it out?" << std::endl;
                     }
                   }
                 }
@@ -657,15 +629,15 @@ void Hand::straight_flush_check(){
       Card temp = flush_hand[r];
       _hand.push_back(temp);
     }
-	std::cout << "in Straight flush check, else if flush but not straight. size of _hand:" << _hand.size() << std::endl;
   }
 
   else if (flush || straight){ // if both are available but not as a straight flush, append flush as it is higher
-	for (int s = 0; s < flush_hand.size(); s++){
-		Card temp = flush_hand[s];
-		_hand.push_back(temp);
-	}
+  	for (int s = 0; s < flush_hand.size(); s++){
+  		Card temp = flush_hand[s];
+  		_hand.push_back(temp);
+  	}
   }
+
 }
 
 void Hand::ace_check(){
@@ -767,9 +739,9 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
       }
     }
     // Check for Straight
-    /*else if(i+1<_temp_hand.size() && _temp_hand[i+1].getValue() == _temp_hand[i].getValue()+1){ //is the next Card object one value higher than the current Card object?
-		if (i + 2 <_temp_hand.size() && _temp_hand[i + 2].getValue() == _temp_hand[i].getValue() + 2){//is the next Card object two value higher than the current Card object?
-			if (i + 3<_temp_hand.size() && _temp_hand[i + 3].getValue() == _temp_hand[i].getValue() + 3){ //is the next Card object three value higher than the current Card object?
+    else if(_temp_hand[i+1].getValue() == _temp_hand[i].getValue()+1){ //is the next Card object one value higher than the current Card object?
+      if(_temp_hand[i+2].getValue() == _temp_hand[i].getValue()+2){//is the next Card object two value higher than the current Card object?
+        if(_temp_hand[i+3].getValue() == _temp_hand[i].getValue()+3){ //is the next Card object three value higher than the current Card object?
           if (_temp_hand[i+4].getValue() == _temp_hand[i].getValue()+4){
             straight = true;// it's a straight
             position = i;
@@ -803,7 +775,7 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
           }
         }
       }
-    }*/
+    }
 
     // else{ //it may be a high card
     //

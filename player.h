@@ -37,7 +37,7 @@ public:
   int get_bankroll();
   int get_pot();
   void clear_pot();
-  void claim_pot(int community_pot); // winner Player object claims the community pot and appends the amount into bankroll
+  void claim_pot(int& community_pot); // winner Player object claims the community pot and appends the amount into bankroll
   // void collect_pot(int pot_money); // collects the pot [FOR WINNERS ONLY]
   bool are_you_AI(); // used a every decision-making point in the game to discern AI from human Player objects
 
@@ -46,9 +46,9 @@ protected:
   std::vector<Card> _pocket_cards; // container with two spaces to hold the cards
   std::vector<Card>::iterator _pocket_iter; // maybe redundant
   std::vector<Card> _player_hand;
-  unsigned int _score = 0;
-  unsigned int _bankroll = 1000; // every Player object gets a bankroll of default 1000 C++ currency on initialisation
-  unsigned int _pot = 0;
+  int _score = 0;
+  int _bankroll = 1000; // every Player object gets a bankroll of default 1000 C++ currency on initialisation
+  int _pot = 0;
   bool _AI = false;
 
 };

@@ -129,8 +129,9 @@ void Player::clear_pot(){
 }
 
 
-void Player::claim_pot(int community_pot){
+void Player::claim_pot(int& community_pot){
   _bankroll += community_pot;
+  community_pot = 0; // reinitialises community_pot as 0 for every round
 }
 
 bool Player::are_you_AI(){
