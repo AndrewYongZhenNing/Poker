@@ -12,74 +12,90 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
     std::cin >> _response;
 
     if (_response == 'p'){
-
-      while(!question){
-
-        std::cout << "\nWould you like to include AI?(y/n)\n";
-        std::cin >>_response;
-        std::cout << "" << std::endl;
-
-        if(_response == 'y'){ // include two AI
-          AI p1 = AI("Archimedes");
-          AI p2 = AI("Leibniz");
-          _players.push_back(p1);
-          _players.push_back(p2);
-          question = true;
-        }
-
-        else if(_response == 'n'){
-          question = true;
-        }
-
-        else{
-          std::cerr << "Invalid command. Please enter either y or n." << std::endl;
-
-        }
-      }
-
-      //reinitialise question as false to be used in the next while loop
+      //
+      // while(!question){
+      //
+      //   std::cout << "\nWould you like to include AI?(y/n)\n";
+      //   std::cin >>_response;
+      //   std::cout << "" << std::endl;
+      //
+      //   if(_response == 'y'){ // include two AI
+      //     AI p1 = AI("Archimedes");
+      //     AI p2 = AI("Leibniz");
+      //     _players.push_back(p1);
+      //     _players.push_back(p2);
+      //     question = true;
+      //   }
+      //
+      //   else if(_response == 'n'){
+      //     question = true;
+      //   }
+      //
+      //   else{
+      //     std::cerr << "Invalid command. Please enter either y or n." << std::endl;
+      //
+      //   }
+      // }
+      std::cout << "Introducing the AI players...\n" << std::endl;
+      AI p1 = AI("Archimedes");
+      AI p2 = AI("Leibniz");
+      _players.push_back(p1);
+      _players.push_back(p2);
+      // reinitialise question as false to be used in the next while loop
       question = false;
 
       while(!question){
         std::cout << "\nPlease enter the number of human players:";
         std::cin >> _number_of_players;
 
-        if(_players.size() == 2){ // AI already included
-          if(_number_of_players <0){
-              std::cerr << "\nInvalid number. Please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
-            }
-
-          else if(_number_of_players >7){
-            std::cerr << "\nThe numver of players, including AI, exceed the maximum (10). Please enter a umber less than or equal to 7." << std::endl;
+        if(_number_of_players <0){
+            std::cerr << "\nInvalid number. Please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
           }
 
-          else{
-            question = true;
-          }
-
+        else if(_number_of_players >7){
+          std::cerr << "\nThe numver of players, including AI, exceed the maximum (10). Please enter a umber less than or equal to 7." << std::endl;
         }
-        else if(_players.size() == 0){ // no AI present
-          if(_number_of_players <2){
-            if (_players.size() == 0){ // there are no AI in the game waiting
-      				std::cerr << "\nInvalid number of players, please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
-      			}
-      			else if (_players.size() != 0){
-      				question = true;
-      			}
-          }
 
-          else if(_number_of_players >1 && _number_of_players < 11){
-            question = true;
-          }
-
-          else if(_number_of_players>10){
-            std::cerr << "\nThe number of players exceed the maximum (10). Please enter a number less than or equal to 10." << std::endl;
-          }
-
-          else{
-            std::cerr << "Invalid command. Please enter an integer number." << std::endl;
-          }
+        else{
+          question = true;
         }
+
+        // if(_players.size() == 2){ // AI already included
+        //   if(_number_of_players <0){
+        //       std::cerr << "\nInvalid number. Please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
+        //     }
+
+          // else if(_number_of_players >7){
+          //   std::cerr << "\nThe numver of players, including AI, exceed the maximum (10). Please enter a umber less than or equal to 7." << std::endl;
+          // }
+          //
+          // else{
+          //   question = true;
+          // }
+
+        // }
+        // else if(_players.size() == 0){ // no AI present
+        //   if(_number_of_players <2){
+        //     if (_players.size() == 0){ // there are no AI in the game waiting
+      	// 			std::cerr << "\nInvalid number of players, please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
+      	// 		}
+      	// 		else if (_players.size() != 0){
+      	// 			question = true;
+      	// 		}
+        //   }
+        //
+        //   else if(_number_of_players >1 && _number_of_players < 11){
+        //     question = true;
+        //   }
+        //
+        //   else if(_number_of_players>10){
+        //     std::cerr << "\nThe number of players exceed the maximum (10). Please enter a number less than or equal to 10." << std::endl;
+        //   }
+        //
+        //   else{
+        //     std::cerr << "Invalid command. Please enter an integer number." << std::endl;
+        //   }
+        // }
       }
 
       for(int i = 1; i <= _number_of_players; i++){ // create new players
@@ -98,8 +114,6 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
       }
 
       std::cout << "\nBegin game.\n" << std::endl;
-
-      // start(); //starts the actual dynamic of the game
 
       // Uncomment below to start a full game
       while(_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
