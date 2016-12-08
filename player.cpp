@@ -32,7 +32,8 @@ void Player::show_pocket(){ // reveals the pocket card of the Player
 
   for (_pocket_iter = _pocket_cards.begin(); _pocket_iter != _pocket_cards.end(); _pocket_iter++){
     Card temp = *_pocket_iter;
-    std:: cout << temp.getSuit() << temp.getValue() << std::flush;
+    // std:: cout << temp.getSuit() << temp.getValue() << std::flush;
+    temp.show_card();
   }
 
   std::cout << "" << std::endl;

@@ -51,7 +51,9 @@ protected:
   std::vector<Player> _active_players;
   std::vector<Card> _board; // this is where the community Card objects are placed
   std::vector<Card>::iterator _board_iter; // for checking if _board has at least 3 cards after flop
+  // For AI
   bool _include_AI = false;
+  // For Statistical Analysis
   char _response; // for playing game/statistical analysis, including/excluding AI etc etc
   char _face;
   std::string _value;

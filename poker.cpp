@@ -101,13 +101,13 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
       std::cout << "\nBegin game.\n" << std::endl;
 
-      start(); //starts the actual dynamic of the game
+      // start(); //starts the actual dynamic of the game
 
       // Uncomment below to start a full game
       while(_players.size() > 1){ // pushes back first Player object in _players and _active_players container at the start of each game such that the dealer 'button' rotates around the table
         _total++; // keeps track of how many rounds have passed: for fun
-        std::cout << "_active_players size:" << _active_players.size() << std::endl;
-        std::cout << "_players size:" << _players.size() << std::endl;
+        std::cout << "Number of players in game: " << _active_players.size() << std::endl;
+        std::cout << "Total number of players remaining: " << _players.size() << std::endl;
         _players.push_back(_players[0]);
         _players.erase(_players.begin());
         _active_players.push_back(_active_players[0]);
@@ -161,12 +161,21 @@ Game::~Game(){};
 void Game::start(){
 
   Deck game_deck = Deck(); //initialises a Deck (object) of cards for gameplay
+
   std::cout << "Shuffling deck...\n" << std::endl;
-  // std::cout <<"deck size: \n" game_deck.size() << std::endl; //check it is a new deck every new game
+
   game_deck.shuffle();
+
   std::cout << "Deck shuffled" << std::endl;
 
-  // last three Player objects of the game are Dealer, Small and Big Blind respectively
+  std::cout << "Players remaining: " << std::endl;
+
+  for (_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter++){
+    Player temp = *_players_iter;
+    std::cout << temp.show_name() << std::endl;
+  }
+
+  // last two Player objects of the game are Dealer, Small and Big Blind respectively
   std::cout << " \nSmall Blind: " << _active_players.rbegin()[1].show_name() << " \nBig Blind: " << _active_players.rbegin()[0].show_name() << std::endl;
   std::cout << "\nDealing pocket cards to players...\n" << std::endl;
 
@@ -177,6 +186,7 @@ void Game::start(){
 
   int call_amount = 0; // a reference amount of raise in each round
 
+  //Last and penultimate Player objects in the _active_players container are the big and small blind respectively
   _active_players.rbegin()[1].bet(_small_blind);
   _active_players.rbegin()[0].bet(_big_blind);
 
@@ -184,42 +194,23 @@ void Game::start(){
 
   bet(call_amount,_big_blind); // pre-flop betting happens in a for loop in here
 
-  std::cout << "Players remaining: " << std::endl;
-
-  for (_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter++){
-    Player temp = *_players_iter;
-    std::cout << temp.show_name() << std::endl;
-  }
-
   deal_flop(game_deck);
-
-  std::cout << "Community cards at flop:\n " << std::endl;
-
-  show_board();
 
   std::cout << "" << std::endl;
 
-  // bet(call_amount,_big_blind); // flop betting happens in a for loop in here
+  bet(call_amount,_big_blind); // flop betting happens in a for loop in here
 
   deal_turn(game_deck);
 
-  std::cout << "\nCommunity cards at turn: " << std::endl;
-
-  show_board();
-
   std::cout << "" << std::endl;
 
-  // bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
+  bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
   deal_river(game_deck);
 
-  std::cout << "\nCommunity cards at river: " << std::endl;
-
-  show_board();
-
   std::cout << "" << std::endl;
 
-  // bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
+  bet(call_amount,2*_big_blind); // post flop betting happens in a for loop in here
 
   std::cout << "\n" << std::endl;
 
@@ -235,8 +226,6 @@ void Game::start(){
 
   _board.clear();
 
-  std::cout << "Size of _player: " << _players.size() << std::endl;
-
   for(int i =0; i < _players.size(); i++){
     if(_players[i].get_bankroll() <= _big_blind){
       std::cout << "Player " << _players[i].show_name() <<" has insufficient funds to continue into the next round. By default, Player " << _players[i].show_name() <<" has been discontinued from the game." << std::endl;
@@ -251,9 +240,9 @@ void Game::start(){
       if(_response == 'n'){
         std::cout << "Would you like to quit? (Note: you get to keep your remainder bankroll but can no longer continue in this game.)\n(y/n)";
         std::cin >> _response;
-        if(_response == 'y'){ // remove Player object from
+        if(_response == 'y'){ // remove Player object from _players container - Player object no longer participates in any of the games
           _players.erase(_players.begin()+i);
-          // _active_players.erase(_active_players.begin()+i);
+          _active_players.erase(_active_players.begin()+i);
 
           i--;
 
@@ -262,9 +251,13 @@ void Game::start(){
     }
   }
 
-  // std::cout << "Continue? y/n";
-  // std::cin >> _response;
-
+  // Re-enter folded Player objects before next round
+  if(_active_players.size() < _players.size()){
+    _active_players.clear();
+    for(int i = 0; i < _players.size(); i++){
+      _active_players.push_back(_players[i]);
+    }
+  }
 
 }
 
@@ -281,21 +274,34 @@ void Game::show_players(){ // test purposes: show how many players are in the ga
 
 void Game::bet(int &amount, int raise_unit){
 
-
-  char response = 'n';
-
   for (int i = 0; i < _active_players.size(); i++){ // for every Player object in _active_players
 
     if(_call_counter != _active_players.size()){ // whilst there are outstanding raises, loop this if statement
 
       if (_active_players[i].are_you_AI()){ // AI Player objects
-        // if(_active_players[i].show_name() == "Archimedes"){
-        //
-        // }
-        //at the moment, not concerned with AI behavious, just let them call()
+
         if(_active_players[i].get_bankroll() > amount){
+
+          //DO SIMULATION HERE
+          std::cout << _active_players[i].show_name() << " is thinking..." << std::endl;
+          std::vector<Card> temp = _active_players[i].get_pocket(); // temporary hold the pocket Card objects AI has, to be fed into  simulation method
+          // simulation_start(temp[0],temp[1],'s',1000); // set it to 'g' (game) mode, where it does not print out statements, and let simulation run over 10000 times
+          // if (probability > 70){ //bet aggressively
+          //
+          // }
+          //
+          // else if(probability <=70 && probability > 30){
+          //
+          // }
+          //
+          // else if(probability < 5){
+          //   std::cout << _active_players[i].show_name() << " has folded." << std::endl;
+          //   _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
+          //   _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects; will rejoin in the subsequent games
+          //   i --; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
+          // }
+
           _active_players[i].call(amount);
-          std::cout<< "In Game::bet, player: " << _active_players[i].show_name() << "; and his bankroll is:" << std::endl;
           _active_players[i].show_bankroll();
           _call_counter ++;
         }
@@ -311,17 +317,37 @@ void Game::bet(int &amount, int raise_unit){
       }
 
       else if(!_active_players[i].are_you_AI()){ // human Player objects
-        show_board();
+        //Clear screen for Windows with system()
+        // system("cls");
+        //Clear screen for Linux with ANSI code
+        std::cout << "\033[2J\033[1;1H";
+
+        if(_board.size() == 0){
+          std::cout << "\nPre-flop betting." << std::endl;
+        }
+        else if(_board.size() == 3){
+          std::cout << "\nCommunity cards at flop:" << std::endl;
+          show_board();
+        }
+        else if(_board.size() == 4){
+          std::cout << "\nCommunity cards at turn:" << std::endl;
+          show_board();
+        }
+        else if(_board.size() == 5){
+          std::cout << "\nCommunity cards at river:" << std::endl;
+          show_board();
+        }
 
         std::cout << "\n" << std::endl;
-
         _active_players[i].show_pocket();
+        _active_players[i].show_bankroll();
+        std::cout << "\n" << std::endl;
 
-        std::cout << "Would you like to call/check(c), raise(r), or fold(f)?\nEnter your command (c,r or f)";
-        std::cin >> response;
+        std::cout << "Would you like to call/check(c), raise(r), or fold(f)?\nEnter your command (c,r or f)\n";
+        std::cin >> _response;
 
         //call
-        if(response == 'c'){// call: match with the current raised value
+        if(_response == 'c'){// call: match with the current raised value
           if(_active_players[i].get_bankroll() >= amount){
             _active_players[i].call(amount);
             _active_players[i].show_bankroll();
@@ -329,7 +355,7 @@ void Game::bet(int &amount, int raise_unit){
           }
 
           else{ // Player object has insufficient funds, must remove from active AND waiting container
-            std::cout << "Insufficient funds as call amount is greater than available bankroll. Player " << _active_players[i].show_name() << " is eliminated from the game." << std::endl;
+            std::cout << "\nInsufficient funds as call amount is greater than available bankroll. Player " << _active_players[i].show_name() << " is eliminated from the game." << std::endl;
             _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
             _community_pot += _active_players[i].get_bankroll(); // takes whatever that is left in the Player object's _bankroll
             _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects
@@ -340,7 +366,7 @@ void Game::bet(int &amount, int raise_unit){
         }
 
         // raise
-        else if(response == 'r'){
+        else if(_response == 'r'){
 
           amount+= raise_unit; // raise by one unit of big blind
           _active_players[i].raise_(amount);
@@ -349,7 +375,7 @@ void Game::bet(int &amount, int raise_unit){
         }
 
         // fold
-        else if(response == 'f'){
+        else if(_response == 'f'){
           // char fold_response;
           // std::cout << "You selected fold(f), are you sure?"
           std::cout << "Player " << _active_players[i].show_name() << " has folded." << std::endl;
@@ -357,26 +383,23 @@ void Game::bet(int &amount, int raise_unit){
           _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects; will rejoin in the subsequent games
           i --; // this is to ensure that the pointer takes one step back as erasing an element skips the immediate element in the container
 
-          // std::cout << "Players remaining: " << std::endl;
-          // for (_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter ++){
-          //   Player temp = *_players_iter;
-          //   std::cout << temp.show_name() << std::endl;
-          // }
+          if(_active_players.size() == 1){
+            std::cout << "Only one remaining player." << _active_players[0].show_name() << " is the winner of the round!" << std::endl;
+          }
+
         }
 
         else{
           std::cerr << "Invalid response. Please try again." << std::endl;
         }
       }
-      }
+    }
 
 
     else{
       std::cout << "Off to next round." << std::endl;
 
     }
-
-
 
   }
 
@@ -387,21 +410,6 @@ void Game::bet(int &amount, int raise_unit){
     bet(amount,raise_unit);
   }
 
-  // CHECK WHY THIS DOES NOT WORK (WITH JOE)
-  // std::cout << "Size of active players: " << _active_players.size() << std::endl;
-  // int i = 1;
-  // for(_players_iter = _active_players.begin(); _players_iter != _active_players.end(); _players_iter++){
-  //
-  //   std::cout << "In for loop..." << "i = " << i << std::endl;
-  //
-  //   Player check = *_players_iter;
-  //   std::cout << "Player " << check.show_name() << std::endl;
-  //   if (check.get_pot() != amount){ // if not all Player objects have the same amount in pot, betting continues until every Player object called or all but one folded
-  //     std::cout << "Not level i: " << i << std::endl;
-  //     bet(amount,raise_unit);
-  //   }
-  //   i++;
-  // }
   _call_counter = 0;
 }
 
@@ -854,7 +862,7 @@ void Game::simulation(){
 
 }
 
-float Game::simulation_start(Card c1, Card c2, char command, int limit){// set default limit as 1000
+float Game::simulation_start(Card c1, Card c2, char command, int limit){
   float win_percentage = 0;
 
   AI dummy = AI("Hamilton");
@@ -1156,9 +1164,6 @@ void Game::s_declare_winner(int &win, char command){
 
   else if (draw){
 
-    for(int r = 0; r < _active_players.size(); r++){
-      //
-    }
     std::cout << "It's a draw between:" << std::endl;
 
     for(int p = 0; p < _active_players.size(); p++){
