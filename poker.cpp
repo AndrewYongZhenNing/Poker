@@ -17,7 +17,7 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
         std::cout << "\nWould you like to include AI?(y/n)\n";
         std::cin >>_response;
-
+        std::cout << "" << std::endl;
 
         if(_response == 'y'){ // include two AI
           AI p1 = AI("Archimedes");
@@ -36,8 +36,6 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
         }
       }
-
-      std::cout << "_players with AI in:" << _players.size() << std::endl;
 
       //reinitialise question as false to be used in the next while loop
       question = false;
@@ -321,6 +319,20 @@ void Game::bet(int &amount, int raise_unit){
         // system("cls");
         //Clear screen for Linux with ANSI code
         std::cout << "\033[2J\033[1;1H";
+
+        // while loop below is to ensure that the next player is ready on screen to prevent revealing pocket cards to other players
+        question = false;
+        while(!question){
+          std::cout << "Player " <<  _active_players[i].show_name() << " are you ready? (y/n)\n";
+          std::cin >> _response;
+          if (_response == 'y'){
+            question = true;
+          }
+
+          else if(_response != 'n'){
+            std::cerr << "Invalid response. Please enter either y or n." << std::endl;
+          }
+        }
 
         if(_board.size() == 0){
           std::cout << "\nPre-flop betting." << std::endl;
@@ -712,12 +724,9 @@ void Game::declare_winner(){
     for (int i = 0; i < _active_players.size(); i++){
       if(_active_players[i].show_name() == winner.show_name()){
         _active_players[i].claim_pot(_community_pot);
+        _community_pot = 0; // reinitialises community_pot as 0 for every round
       }
     }
-
-    // winner.show_bankroll();
-    //winner.collect_pot(_pot); // increases the winner's bankroll by the amount of bet on the particular round
-
   }
 
   else if (draw){
@@ -726,12 +735,22 @@ void Game::declare_winner(){
       //
     }
     std::cout << "It's a draw between:" << std::endl;
-
+    int draw = 0;;
+    int share = 0;
     for(int p = 0; p < _active_players.size(); p++){
       if(_active_players[p].get_score() == winner.get_score()){ // prints those who share the same score
         std::cout << _active_players[p].show_name() << std::endl;
+        draw++;
       }
     }
+    share = _community_pot/draw;
+    for (int q = 0; q < _active_players.size(); q++){
+      if(_active_players[q].get_score() == winner.get_score()){ // prints those who share the same score
+        _active_players[q].claim_pot(share);
+        _community_pot = 0; // reinitialises community_pot as 0 for every round
+      }
+    }
+
   }
 
   for(int i = 0; i < _active_players.size(); i++){
