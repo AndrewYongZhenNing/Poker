@@ -7,13 +7,13 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
   std::cout << "Welcome!" << std::endl;
 
-  while(!question){
+  while(!_question){
     std::cout << "\nWould you like to play a game of Poker (p) or would you like to review a statistical analysis of the game(s)? (p/s)";
     std::cin >> _response;
 
     if (_response == 'p'){
       //
-      // while(!question){
+      // while(!_question){
       //
       //   std::cout << "\nWould you like to include AI?(y/n)\n";
       //   std::cin >>_response;
@@ -24,11 +24,11 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
       //     AI p2 = AI("Leibniz");
       //     _players.push_back(p1);
       //     _players.push_back(p2);
-      //     question = true;
+      //     _question = true;
       //   }
       //
       //   else if(_response == 'n'){
-      //     question = true;
+      //     _question = true;
       //   }
       //
       //   else{
@@ -41,10 +41,10 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
       AI p2 = AI("Leibniz");
       _players.push_back(p1);
       _players.push_back(p2);
-      // reinitialise question as false to be used in the next while loop
-      question = false;
+      // reinitialise _question as false to be used in the next while loop
+      _question = false;
 
-      while(!question){
+      while(!_question){
         std::cout << "\nPlease enter the number of human players:";
         std::cin >> _number_of_players;
 
@@ -57,7 +57,7 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
         }
 
         else{
-          question = true;
+          _question = true;
         }
 
         // if(_players.size() == 2){ // AI already included
@@ -70,7 +70,7 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
           // }
           //
           // else{
-          //   question = true;
+          //   _question = true;
           // }
 
         // }
@@ -80,12 +80,12 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
       	// 			std::cerr << "\nInvalid number of players, please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
       	// 		}
       	// 		else if (_players.size() != 0){
-      	// 			question = true;
+      	// 			_question = true;
       	// 		}
         //   }
         //
         //   else if(_number_of_players >1 && _number_of_players < 11){
-        //     question = true;
+        //     _question = true;
         //   }
         //
         //   else if(_number_of_players>10){
@@ -134,23 +134,23 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
         std::cout << "Congratulations!\nThe overall winner of this game is Player " << _active_players[0].show_name() << "!" << std::endl;
         std::cout << "Total rounds played: " << _total << std::endl;
       }
-      question = true;
+      _question = true;
     }
 
     else if(_response == 's'){
       simulation();
-      question = false;
-      while(!question){
+      _question = false;
+      while(!_question){
         std::cout << "Run simulation again?(y/n)";
         std::cin>> _response;
         if(_response == 'y'){
           simulation();
-          question = true;
+          _question = true;
         }
 
         else if(_response == 'n'){
           std::cout << "Thank you for using the simulation. Please enjoy the game." << std::endl;
-          question = true;
+          _question = true;
         }
 
         else{
@@ -335,12 +335,12 @@ void Game::bet(int &amount, int raise_unit){
         std::cout << "\033[2J\033[1;1H";
 
         // while loop below is to ensure that the next player is ready on screen to prevent revealing pocket cards to other players
-        question = false;
-        while(!question){
+        _question = false;
+        while(!_question){
           std::cout << "Player " <<  _active_players[i].show_name() << " are you ready? (y/n)\n";
           std::cin >> _response;
           if (_response == 'y'){
-            question = true;
+            _question = true;
           }
 
           else if(_response != 'n'){
@@ -787,95 +787,95 @@ void Game::simulation(){
 
   for(int i = 0; i<2; i++){
     val = 0;
-    question = false;
-    while (!question){
+    _question = false;
+    while (!_question){
       std::cout << "Card #" << i+1 << ":" << std::endl;
       std::cout << "Suit:";
       std::cin>> _face;
 
       if (_face == 'h' || _face == 'H'){
-        question = true;
+        _question = true;
       }
 
       else if(_face == 'd' || _face == 'D'){
-        question = true;
+        _question = true;
       }
       else if(_face == 'c' || _face == 'C'){
-        question = true;
+        _question = true;
       }
       else if(_face == 's' || _face == 'S'){
-        question = true;
+        _question = true;
       }
 
       else{
         std::cerr << _face << " is an invalid suit. Please enter using the abbreviation provided: H,S,D,C." << std::endl;
-        question = false;
+        _question = false;
       }
     }
 
-    question = false;
-    while(!question){
+    _question = false;
+    while(!_question){
       std::cout << "Face Value:";
       std::cin >> _value;
 
-      question = false;
+      _question = false;
 
       if (_value == "2"){
         val = 2;
-        question = true;
+        _question = true;
       }
       else if(_value == "3"){
         val = 3;
-        question = true;
+        _question = true;
       }
       else if(_value == "4"){
         val = 4;
-        question = true;
+        _question = true;
       }
       else if(_value == "5"){
         val = 5;
-        question = true;
+        _question = true;
       }
       else if(_value == "6"){
         val = 6;
-        question = true;
+        _question = true;
       }
       else if(_value == "7"){
         val = 7;
-        question = true;
+        _question = true;
       }
       else if(_value == "8"){
         val = 8;
-        question = true;
+        _question = true;
       }
       else if(_value == "9"){
         val = 9;
-        question = true;
+        _question = true;
       }
       else if(_value == "10"){
         val = 10;
-        question = true;
+        _question = true;
       }
       else if(_value == "J" || _value == "j"){ // case (in)sensitive
         val = 11;
-        question = true;
+        _question = true;
       }
       else if(_value == "Q" || _value == "q"){// case (in)sensitive
         val = 12;
-        question = true;
+        _question = true;
       }
       else if(_value == "K" || _value == "k"){// case (in)sensitive
         val = 13;
-        question = true;
+        _question = true;
       }
       else if(_value == "A" || _value == "a"){// case (in)sensitive
         val = 14;
-        question = true;
+        _question = true;
       }
 
       else{
         std::cerr << "Invalid face value. Please enter a face value between 2 to Ace using the abbreviation below: \n2,3,4,5,6,7,8,9,10,J,Q,K,A" << std::endl;
-        question = false;
+        _question = false;
       }
     }
 
