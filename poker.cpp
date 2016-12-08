@@ -902,6 +902,8 @@ float Game::simulation_start(Card c1, Card c2, char command, int limit){
   dummy.deal(c1);
   dummy.deal(c2);
 
+  //Initialise these member variables as zero such that percentage do not overflow;
+  _win = 0;
   _total = 0;
 
   while(_total < limit){
