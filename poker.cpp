@@ -139,25 +139,25 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
 
     else if(_response == 's'){
       simulation();
-      _question = false;
-      while(!_question){
-        std::cout << "Run simulation again?(y/n)";
-        std::cin>> _response;
-        if(_response == 'y'){
-          simulation();
-          _question = true;
-        }
-
-        else if(_response == 'n'){
-          std::cout << "Thank you for using the simulation. Please enjoy the game." << std::endl;
-          _question = true;
-        }
-
-        else{
-          std::cerr << "Invalid response. Please enter either y or n." << std::endl;
-        }
-
-      }
+      // _question = false;
+      // while(!_question){
+      //   std::cout << "Run simulation again?(y/n)";
+      //   std::cin>> _response;
+      //   if(_response == 'y'){
+      //     simulation();
+      //     _question = true;
+      //   }
+      //
+      //   else if(_response == 'n'){
+      //     std::cout << "Thank you for using the simulation. Please enjoy the game." << std::endl;
+      //     _question = true;
+      //   }
+      //
+      //   else{
+      //     std::cerr << "Invalid response. Please enter either y or n." << std::endl;
+      //   }
+      //
+      // }
     }
 
     else{
@@ -893,6 +893,19 @@ void Game::simulation(){
 
   simulation_start(c1,c2,'s',_limit); // command == 's' implies this is strictly a simulation study
 
+  _question = false;
+  while(!_question){
+    std::cout << "Run simulation again?(y/n)";
+    std::cin>> _response;
+    if(_response == 'y'){
+      simulation();
+      _question = true;
+    }
+    else if(_response == 'n'){
+      std::cout << "Thank you for using the simulation. Please enjoy the game." << std::endl;
+      _question = true;
+    }
+  }
 }
 
 float Game::simulation_start(Card c1, Card c2, char command, int limit){
