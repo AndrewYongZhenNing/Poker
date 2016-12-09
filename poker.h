@@ -23,7 +23,6 @@ public:
 
   Game();
   ~Game();
-  // void debug(); // a debugger program I make to check whether the scores are rightuflly allocated
   void start(); // starts the game after initialising
   void show_players(); // made for testing purporses
   void bet(int &amount, int raise_unit); // returns the call amount; //pass call amount by reference as it is needed to go through the entire game round
@@ -33,9 +32,7 @@ public:
   void deal_river(Deck &deck); // deals 5th community card
   //N.B essentially deal_turn and deal_river have some methods, but I made different functions as to avoid any unforseen subtle errors, can change later
   void show_board();
-  // std::vector<Card> get_board();
   void declare_winner(); // determines the winner from the scores given to the Player objects
-
   void simulation();
   float simulation_start(Card c1, Card c2, char command, int limit); // to be used for statistical analysis, but also by AI to determine odds of winning
   void s_declare_winner(int &win, char command); // determines the winning percentage in a simulation
@@ -58,7 +55,7 @@ protected:
   char _face;
   std::string _value;
   int _limit = 0; // variable to hold the number of simulations to perform
-  bool question = false; // generalised boolean used with while loops at points where user input is necessary such that wrong inputs do not cause problems
+  bool _question = false; // generalised boolean used with while loops at points where user input is necessary such that wrong inputs do not cause problems
   int _total = 0;
   int _win = 0;
 

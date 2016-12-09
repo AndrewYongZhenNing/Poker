@@ -17,22 +17,10 @@ Deck::Deck(){
 
       Card card(_suit[i],j);
 
-      /* THIS IS JUST FOR CHECKING THAT THE DECK HAS ALL THE VALUES FOR EVERY SUIT
-
-      // card.getSuit();
-      // card.getValue();
-
-      // std::cout << card.getSuit() << card.getValue() << std::endl;
-      // std::cout << card.getSuit() << std::endl;
-
-      */
-
       _deck.push_back(card);
 
     }
   }
-
-
 }
 
 Deck::~Deck(){};
@@ -67,10 +55,6 @@ Card Deck::get_top(){ // gets the card at the top of the Deck (container)
 
   return top_card;
 
-  // _deck.erase(_deck_iter); // ensures that top card is gone from the deck
-
-  // std::cout << top_card.getSuit() << top_card.getValue() << std::endl; // for visiual purposes on the temrinal
-
 }
 
 void Deck::remove_card(Card &c){ // remove a selected Card object from the Deck (for simulation purposes)
@@ -80,5 +64,4 @@ void Deck::remove_card(Card &c){ // remove a selected Card object from the Deck 
       _deck.erase(_deck.begin()+i);
     }
   }
-
 }

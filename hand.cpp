@@ -66,9 +66,6 @@ Hand::Hand(Player &player, std::vector<Card> board, char command){ // Simulation
 
       Card temp = *_temp_iter;
 
-
-      // temp.show_card(); //test not needed in simulation
-
       _temp_hand.push_back(*_temp_iter); //dereferencing _temp_iter will give one of the two cards in the Player's pockets where the pointer is pointing at
 
     }
@@ -80,40 +77,8 @@ Hand::Hand(Player &player, std::vector<Card> board, char command){ // Simulation
 
     }
 
-    // std::cout << "\nThe hand for " << player.show_name() << " is: " << std::endl;
-    //
-    // // print the Hand to check
-    // for (_temp_iter = _temp_hand.begin();_temp_iter != _temp_hand.end(); _temp_iter++){ // testing purposes
-    //
-    //   Card temp = *_temp_iter;
-    //
-    //   temp.show_card();
-    //
-    // }
-
-
-    // for (_temp_iter = _hand.begin();_temp_iter != _hand.end(); _temp_iter++){ // testing purposes
-    //
-    //   Card temp = *_temp_iter;
-    //
-    //   temp.show_card();
-    //
-    // }
-
-    // std::cout << "" << std::endl;
-
     //sorts and give the Hand object a score
     player.assign_score(s_evaluate()); // assigns the score to the Player object this Hand is for
-
-    // std::cout << "\nThe hand for " << player.show_name() << " is: " << std::endl;
-    // for (_temp_iter = _hand.begin();_temp_iter != _hand.end(); _temp_iter++){ // testing purposes
-    //
-    //   Card temp = *_temp_iter;
-    //
-    //   temp.show_card();
-    // }
-    // std::cout << "\n" << std::endl;
-    // player.show_score(); //a method to check if the scores are evaluated properly
     player.get_score();
     player.get_hand(_hand); // passes the _hand container evaluated in Hand class to each Player object
 
@@ -195,10 +160,6 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
 
       else if(i>0 && _temp_hand[i-1].getValue() != _temp_hand[i].getValue()){ // extra condition to ensure that this is only a Pair IFF it is not equal to the value before it
 
-        //push back for later:
-        // pushes back the two cards that makes 1-Pair
-        // _pair.push_back(hand[i]);
-        // _pair.push_back(hand[i+1]);
         pair +=1;
         position = i;
         for(position; position < i+2; position++){
@@ -208,7 +169,6 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
           // if Full House is not available, append temp_pair Card objects into _hand for 1-Pair 2-Pair
           temp_pair.push_back(temp);
           std::sort(temp_pair.begin(),temp_pair.end()); // ensures that it is always in ascending order
-          // _hand.push_back(temp);
         }
       }
 
@@ -229,56 +189,6 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
         }
       }
     }
-    // Check for Straight
-    // else if(_temp_hand[i+1].getValue() == _temp_hand[i].getValue()+1){ //is the next Card object one value higher than the current Card object?
-    //   if(_temp_hand[i+2].getValue() == _temp_hand[i].getValue()+2){//is the next Card object two value higher than the current Card object?
-    //     if(_temp_hand[i+3].getValue() == _temp_hand[i].getValue()+3){ //is the next Card object three value higher than the current Card object?
-    //       if (_temp_hand[i+4].getValue() == _temp_hand[i].getValue()+4){
-    //         straight = true;// it's a straight
-    //         position = i;
-    //
-    //         for (position; position < i+5; position ++){ // append the straight Card objects to _hand
-    //             Card temp = _temp_hand[position];
-    //             _hand.push_back(temp);
-    //           }
-    //
-    //       }
-    //
-    //       else if(_temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
-    //         int count = 0; //ensures that if there are two Ace Card objects, take one and leave for loop
-    //         for(int j = 0; j < _temp_hand.size(); j++){
-    //           if(count == 0){
-    //             if(_temp_hand[j].getValue()== 14){ // switch Ace value from 14 to 1
-    //               _temp_hand[j].switch_ace();
-    //               Card temp = _temp_hand[j];
-    //               _hand.push_back(temp);
-    //               count ++; // this ensures that once an Ace has been appended into _hand, take no more and fill it with the rest of the sequence
-    //               straight = true;
-    //               position = i;
-    //             }
-    //           }
-    //         }
-    //         if(straight){
-    //           for(position; position < i+4; position ++){
-    //             Card temp = _temp_hand[position];
-    //             _hand.push_back(temp);
-    //         }
-    //
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    // else{ //it may be a high card
-    //
-    //   if(_pair.size() == 0){ // only consider High Cards if no Pair is present
-    //     _high_card.push_back(hand[i]); //push back the Card objects that could potentially be the high cards
-    //   }
-    //
-    // }
-
-    // std::cout << hand[i].getValue() << " "<< std::flush;
   }
 
   std::cout << "" << std::endl;
@@ -420,16 +330,7 @@ int Hand::evaluate(){ // sorts and prints out the sorted Hand
       }
 
       //now, _temp_hand is a container full of possible kicker Card object
-      // int p = 0;
-      // std::sort(_temp_hand.begin(), _temp_hand.end());
       Card kicker = *_temp_hand.rbegin(); // let kicker be the last Card object (also the one with the highest value) from the _temp_hand
-
-      // for(int k = p+1; k < _temp_hand.size(); k++){
-      //   if(kicker.getValue() < _temp_hand[k].getValue()){
-      //     kicker = _temp_hand[k]; // switch potential kicker Card object to the new card
-      //
-      //   }
-      // }
       _hand.push_back(kicker);
     }
     score = 3;
@@ -564,7 +465,7 @@ void Hand::straight_flush_check(){
               }
             }
 
-            else if(_temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
+            else if(i+4 < _temp_hand.size() && _temp_hand[i+4].getValue() != _temp_hand[i].getValue()+4 && _temp_hand[i].getValue()==2 ){ // one last hope: is there an Ace in the _temp_hand?
               int ace_count = 0; //ensures that if there are two or more Ace Card objects, take one and leave for loop
               for(int j = 0; j < _temp_hand.size(); j++){
                 if(ace_count == 0){
@@ -648,7 +549,7 @@ void Hand::ace_check(){
   }
 }
 
-int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
+int Hand::s_evaluate(){ // Simular to evaluate(), but evaluates for the simulation
 
   std::vector<Card>::iterator sort_iter; // create a sorting iterator
   std::vector<Card> temp_pair;
@@ -710,14 +611,10 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
           // if Full House is not available, append temp_pair Card objects into _hand for 1-Pair 2-Pair
           temp_pair.push_back(temp);
           std::sort(temp_pair.begin(),temp_pair.end()); // ensures that it is always in ascending order
-          // _hand.push_back(temp);
         }
-        // save the erasing and sorting for when it is determined whether or not it is 1-Par or 2-Pairs
+        // save the erasing and sorting for when it is determined whether or not it is 1-Pair or 2-Pairs
 
-        // if (pair >2){ // if there are more
-        //   three_kind = true;
-        //   pair = 0
-        // }
+
 
       }
 
@@ -776,19 +673,7 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
         }
       }
     }
-
-    // else{ //it may be a high card
-    //
-    //   if(_pair.size() == 0){ // only consider High Cards if no Pair is present
-    //     _high_card.push_back(hand[i]); //push back the Card objects that could potentially be the high cards
-    //   }
-    //
-    // }
-
-    // std::cout << hand[i].getValue() << " "<< std::flush;
   }
-
-  // std::cout << "" << std::endl;
 
   //assigning score to each possible Hand
   if(straight_flush){
@@ -815,14 +700,9 @@ int Hand::s_evaluate(){ // sorts and prints out the sorted Hand
 
   else if(pair >= 1 && three_kind){ //full house
     if (pair >1){ // there is already a 2-Pair in place
-      // std::sort(_hand.begin(),_hand.end());
-      // _hand.erase(_hand.begin(),_hand.begin()+1); // this removes the first two (smallest-valued) Pair to make room for Full House
-      // std::cout << "Entering while" << std::endl;
-      //reduce the size of temp_pair to two, holding the two Pair
       while(temp_pair.size() != 2){
         temp_pair.erase(temp_pair.begin(),temp_pair.begin()+2);
       }
-      // std::cout << "Exited while" << std::endl; // //test not needed in simulation
     }
 
     // push back the highest Pair to complete a full house

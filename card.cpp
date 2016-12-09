@@ -13,17 +13,12 @@ Card::~Card(){};
 
 char Card::getSuit(){
 
-  // std::cout << "The suit is: " << _suit << std::endl;
-  // std::cout << _suit << std::endl;
-
   return _suit;
 
 }
 
 int Card::getValue(){
 
-  // std::cout << "The value is: " << _value << std::endl;
-  // std::cout << _value << std::endl;
 
   return _value;
 }
@@ -55,8 +50,6 @@ void Card::show_card(){ // displays the Card object on the terminal (with A K Q 
   else{
     std::cout << _suit << _value  << " " << std::flush; // original statement
   }
-
-  // std::cout << "" << std::endl; //ends the line after flush
 
 }
 

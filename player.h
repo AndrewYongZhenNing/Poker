@@ -38,7 +38,6 @@ public:
   int get_pot();
   void clear_pot();
   void claim_pot(int& community_pot); // winner Player object claims the community pot and appends the amount into bankroll
-  // void collect_pot(int pot_money); // collects the pot [FOR WINNERS ONLY]
   bool are_you_AI(); // used a every decision-making point in the game to discern AI from human Player objects
 
 protected:

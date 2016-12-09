@@ -41,11 +41,6 @@ protected:
   bool straight_flush = false;
   bool royal_flush = false;
 
-  //save below for full Poker game, where ranks are compared, now focus on finding winner by assigning players with a number for whatever rank they get and if it is the same call draw
-  // std::vector<Card> _high_card;
-  // std::vector<Card> _pair;
-
-
 };
 
 #endif

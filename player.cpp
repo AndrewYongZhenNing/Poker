@@ -22,8 +22,9 @@ Player::Player(std::string AI_name){ // constructor used for initialising AI
 Player::~Player(){};
 
 std::string Player::show_name(){
-  // std::cout << player_name << std::endl;
+
   return player_name;
+
 }
 
 void Player::show_pocket(){ // reveals the pocket card of the Player
@@ -32,7 +33,7 @@ void Player::show_pocket(){ // reveals the pocket card of the Player
 
   for (_pocket_iter = _pocket_cards.begin(); _pocket_iter != _pocket_cards.end(); _pocket_iter++){
     Card temp = *_pocket_iter;
-    // std:: cout << temp.getSuit() << temp.getValue() << std::flush;
+
     temp.show_card();
   }
 
@@ -40,18 +41,11 @@ void Player::show_pocket(){ // reveals the pocket card of the Player
 
 
 }
-//
-// void Player::deal(){ //dereferences the Deck iter into the _pocket_cards container
-//
-//
-//
-// }
 
 void Player::deal(Card &top_card){ // takes in a Deck object, then use get_top() method to get the top Card object, then push_back into Player's pocket container
 
-  // Card temp = deck.get_top(); // method get_top() returns a Card object, which fits the LHS temp
   _pocket_cards.push_back(top_card); // push_back the top card into pocket_cards container
-  // deck.erase()
+
 
 }
 
@@ -77,7 +71,7 @@ void Player::assign_score(int hand_score){
 
 }
 
-int Player::get_score(){
+int Player::get_score(){ // returns the score of the Player object
 
   return _score;
 }
@@ -132,16 +126,12 @@ void Player::clear_pot(){
 
 void Player::claim_pot(int& community_pot){
   _bankroll += community_pot;
-  community_pot = 0; // reinitialises community_pot as 0 for every round
 }
 
 bool Player::are_you_AI(){
   return _AI;
 }
 
-// void Player::collect_pot(int pot_money){
-//   _bankroll += pot_money;
-// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AI DERIVED CLASS

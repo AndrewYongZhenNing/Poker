@@ -12,30 +12,7 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
     std::cin >> _response;
 
     if (_response == 'p'){
-      //
-      // while(!_question){
-      //
-      //   std::cout << "\nWould you like to include AI?(y/n)\n";
-      //   std::cin >>_response;
-      //   std::cout << "" << std::endl;
-      //
-      //   if(_response == 'y'){ // include two AI
-      //     AI p1 = AI("Archimedes");
-      //     AI p2 = AI("Leibniz");
-      //     _players.push_back(p1);
-      //     _players.push_back(p2);
-      //     _question = true;
-      //   }
-      //
-      //   else if(_response == 'n'){
-      //     _question = true;
-      //   }
-      //
-      //   else{
-      //     std::cerr << "Invalid command. Please enter either y or n." << std::endl;
-      //
-      //   }
-      // }
+
       std::cout << "Introducing the AI players...\n" << std::endl;
       AI p1 = AI("Archimedes");
       AI p2 = AI("Leibniz");
@@ -60,42 +37,6 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
           _question = true;
         }
 
-        // if(_players.size() == 2){ // AI already included
-        //   if(_number_of_players <0){
-        //       std::cerr << "\nInvalid number. Please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
-        //     }
-
-          // else if(_number_of_players >7){
-          //   std::cerr << "\nThe numver of players, including AI, exceed the maximum (10). Please enter a umber less than or equal to 7." << std::endl;
-          // }
-          //
-          // else{
-          //   _question = true;
-          // }
-
-        // }
-        // else if(_players.size() == 0){ // no AI present
-        //   if(_number_of_players <2){
-        //     if (_players.size() == 0){ // there are no AI in the game waiting
-      	// 			std::cerr << "\nInvalid number of players, please ensure to enter a positive integer number that is greater than or equal to 2." << std::endl;
-      	// 		}
-      	// 		else if (_players.size() != 0){
-      	// 			_question = true;
-      	// 		}
-        //   }
-        //
-        //   else if(_number_of_players >1 && _number_of_players < 11){
-        //     _question = true;
-        //   }
-        //
-        //   else if(_number_of_players>10){
-        //     std::cerr << "\nThe number of players exceed the maximum (10). Please enter a number less than or equal to 10." << std::endl;
-        //   }
-        //
-        //   else{
-        //     std::cerr << "Invalid command. Please enter an integer number." << std::endl;
-        //   }
-        // }
       }
 
       for(int i = 1; i <= _number_of_players; i++){ // create new players
@@ -138,26 +79,9 @@ Game::Game(){ // upon initialising, set number of players (Player objects), crea
     }
 
     else if(_response == 's'){
+
       simulation();
-      // _question = false;
-      // while(!_question){
-      //   std::cout << "Run simulation again?(y/n)";
-      //   std::cin>> _response;
-      //   if(_response == 'y'){
-      //     simulation();
-      //     _question = true;
-      //   }
-      //
-      //   else if(_response == 'n'){
-      //     std::cout << "Thank you for using the simulation. Please enjoy the game." << std::endl;
-      //     _question = true;
-      //   }
-      //
-      //   else{
-      //     std::cerr << "Invalid response. Please enter either y or n." << std::endl;
-      //   }
-      //
-      // }
+
     }
 
     else{
@@ -297,6 +221,7 @@ void Game::bet(int &amount, int raise_unit){
           //DO SIMULATION HERE
           std::cout << _active_players[i].show_name() << " is thinking..." << std::endl;
           std::vector<Card> temp = _active_players[i].get_pocket(); // temporary hold the pocket Card objects AI has, to be fed into  simulation method
+          // left commented out due to time constraint, unable to fix segmentation fault
           // simulation_start(temp[0],temp[1],'s',1000); // set it to 'g' (game) mode, where it does not print out statements, and let simulation run over 10000 times
           // if (probability > 70){ //bet aggressively
           //
@@ -402,8 +327,7 @@ void Game::bet(int &amount, int raise_unit){
 
         // fold
         else if(_response == 'f'){
-          // char fold_response;
-          // std::cout << "You selected fold(f), are you sure?"
+
           std::cout << "Player " << _active_players[i].show_name() << " has folded." << std::endl;
           _community_pot += _active_players[i].get_pot(); // appends whatever that is in the folded Player object's pot into the community pot
           _active_players.erase(_active_players.begin()+i); //removes current Player object from the container of active Player objects; will rejoin in the subsequent games
@@ -722,11 +646,10 @@ void Game::declare_winner(){
       }
 
       else{ // the candidate winner has the lower score, transfer the information of the candidate winner to the winner object
-        // _active_players[i].claim_pot(_community_pot); // actual winner Player object claims the pot, not the object called winner
-        // std::cout << _active_players[i].show_name();
-        // _active_players[i].show_bankroll();
+
         winner = _active_players[i]; // let the winner be the i'th Player object which has the presently highest score
         draw = false; // put this line here just in case previous there were cases where other Plyers objects have the same score
+
       }
 
     }
@@ -780,8 +703,8 @@ void Game::simulation(){
   std::cout << "Begin simulation." << std::endl;
 
   // User selection
-  std::cout << "Please select a starting hand of your choice:\nUse the abbreviation H,S,C,D for the suit and 2,3,4,5,6,7,8,9,10,J,Q,K,A for the face value." << std::endl;
-  // Player dummy = Player("Archimedes");
+  std::cout << "Please select a starting hand of your choice:\nUse the abbreviation \nH,S,C,D for the suit and \n2,3,4,5,6,7,8,9,10,J,Q,K,A for the face value." << std::endl;
+
   int val = 0;
   std::vector<Card> temp_pocket;
 
